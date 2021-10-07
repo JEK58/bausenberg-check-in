@@ -7,7 +7,7 @@ COPY . .
 RUN yarn build
 
 # Production build
-FROM nginx:1.20.1-alpine
+FROM nginx:1.21.3-alpine
 #RUN addgroup app && adduser -S -G app app
 #USER app
 COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf

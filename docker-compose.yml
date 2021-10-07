@@ -8,29 +8,22 @@ services:
     image: bausenberg-check-in-client
     container_name: bausenberg-check-in-client
     restart: always
+    ports:
+      - "80:80"
 
-  server:
-    image: node:16.2.0-alpine3.13
-    restart: always
-    container_name: bausenberg-check-in-server
+  # server:
+  #   image: node:16.2.0-alpine3.13
+  #   restart: always
+  #   container_name: bausenberg-check-in-server
 
-    working_dir: /bausenberg-check-in/server
-    volumes:
-      - ./:/bausenberg-check-in:rw
-    environment:
-      # - NODE_ENV=production
+  #   working_dir: /bausenberg-check-in/server
+  #   volumes:
+  #     - ./:/bausenberg-check-in:rw
+  #   environment:
+  #     # - NODE_ENV=production
 
-    command: ./docker-entrypoint.sh
-  db:
-    image: mongo:latest
-    restart: always
-    container_name: bausenberg-check-in-db
-
-    working_dir: /bausenberg-check-in/db
-    volumes:
-      - ./:/bausenberg-check-in:rw
-
-networks:
-  default:
-    external:
-      name: traefik
+  #   command: ./docker-entrypoint.sh
+# networks:
+#   default:
+#     external:
+#       name: traefik
