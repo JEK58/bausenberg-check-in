@@ -6,30 +6,23 @@
 docker-compose -f docker-compose-prod.yml up --force-recreate --build
 ```
 
-## Project setup
+## Todo
 
-```
-yarn install
-```
+## Frontend
 
-### Compiles and hot-reloads for development
+- [ ] More beautiful colors and design
+- [ ] Server offline warning
+- [ ] Make it more leightweight
 
-```
-yarn serve
-```
+### Home
 
-### Compiles and minifies for production
+- [ ] Store checkinId in local storage for 12 hours
 
-```
-yarn build
-```
+### Admin
 
-### Lints and fixes files
+- [ ] Admin Auth
+- [ ] Export
 
-```
-yarn lint
-```
+## Backend
 
-### Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- [ ] API Rate limit
