@@ -52,7 +52,7 @@
           angeben.
         </p>
       </div>
-
+      <!-- Checkout -->
       <div v-else>
         <h4>Bausenberg Check-out</h4>
         <div class="btn-group col mt-4" role="group">
