@@ -29,7 +29,7 @@ const logger = require("./config/winston");
 
 // DB Setup
 require("./config/mongoose");
-const CheckInModel = require("./models/CheckIn");
+const CheckInModel = require("./models/Check-In");
 
 let BASE_URL = "http://localhost:8080";
 if (process.env.NODE_ENV === "production") {

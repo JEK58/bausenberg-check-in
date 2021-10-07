@@ -3,7 +3,7 @@ const logger = require("../../config/winston");
 
 const router = express.Router();
 
-const CheckInModel = require("../../models/CheckIn");
+const CheckInModel = require("../../models/Check-In");
 
 // Get Check-ins
 router.get("/", async (req, res) => {
