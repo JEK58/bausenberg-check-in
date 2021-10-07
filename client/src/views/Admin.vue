@@ -75,7 +75,7 @@ export default {
   name: "Admin",
   components: {},
   data() {
-    return { checkins: [], loggedIn: false, databaseError: null, password: "" };
+    return { checkins: [], loggedIn: true, databaseError: null, password: "" };
   },
   methods: {
     async fetchDB() {

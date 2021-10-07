@@ -1,5 +1,5 @@
 export function getBaseUrl() {
-  let URL = "wss://pdf-presenter.stephanschoepe.de";
+  let URL = window.location.protocol.toString();
   if (process.env.NODE_ENV == "development") {
     URL =
       window.location.protocol.toString() +
