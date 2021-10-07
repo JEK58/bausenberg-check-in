@@ -96,7 +96,7 @@
             <button
               type="button"
               class="btn btn-success"
-              @click="addCheckout"
+              @click="addCheckOut"
               :disabled="checkoutButtonIsDisabled"
             >
               Check out
