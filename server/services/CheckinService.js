@@ -1,18 +1,18 @@
-const CheckinModel = require("../models/Checkin");
+const CheckInModel = require("../models/CheckIn");
 
-const CheckinService = {
+const CheckInService = {
   getAll: async () => {
-    return await Checkin.find({});
+    return await CheckIn.find({});
   },
 
   delete: async (id) => {
-    return await CheckinModel.findByIdAndDelete(id);
+    return await CheckInModel.findByIdAndDelete(id);
   },
 
   save: async (data) => {
-    const checkin = new CheckinModel(data);
-    return await checkin.save();
+    const checkIn = new CheckInModel(data);
+    return await checkIn.save();
   },
 };
 
-module.exports = CheckinService;
+module.exports = CheckInService;

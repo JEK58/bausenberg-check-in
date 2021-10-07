@@ -3,12 +3,12 @@ const logger = require("../../config/winston");
 
 const router = express.Router();
 
-const CheckinModel = require("../../models/Checkin");
+const CheckInModel = require("../../models/CheckIn");
 
-// Get Checkins
+// Get Check-ins
 router.get("/", async (req, res) => {
   try {
-    const response = await CheckinModel.find({});
+    const response = await CheckInModel.find({});
     res.send(response);
   } catch (error) {
     logger.error(error);
@@ -16,15 +16,15 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Add Checkin
+// Add Check-in
 router.post("/", async (req, res) => {
   try {
-    const checkin = new CheckinModel({
+    const checkIn = new CheckInModel({
       name: req.body.name,
-      checkinDate: Date.now(),
+      checkInDate: Date.now(),
       club: req.body.club,
     });
-    const response = await checkin.save();
+    const response = await checkIn.save();
     logger.info(response);
     res.status(201).send(response);
   } catch (error) {
@@ -33,11 +33,11 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Add landing to checkin
+// Add landing to checkIn
 router.put("/:id", async (req, res) => {
   try {
     const query = { _id: req.params.id };
-    const response = await CheckinModel.findOneAndUpdate(query, {
+    const response = await CheckInModel.findOneAndUpdate(query, {
       landing: req.body.landing,
     });
     logger.info(response);
@@ -48,10 +48,10 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Delete Checkin
+// Delete Check-in
 router.delete("/:id", async (req, res) => {
   try {
-    const response = await CheckinModel.findByIdAndDelete(req.params.id);
+    const response = await CheckInModel.findByIdAndDelete(req.params.id);
     logger.info(response);
 
     res.status(200).send(response);

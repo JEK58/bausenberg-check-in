@@ -18,7 +18,7 @@ docker-compose -f docker-compose-prod.yml up --force-recreate --build
 
 #### Home
 
-- [ ] Store checkinId in local storage for 12 hours
+- [ ] Store checkInId in local storage for 12 hours
 
 #### Admin
 

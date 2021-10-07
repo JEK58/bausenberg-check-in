@@ -13,16 +13,16 @@ const apiClient = axios.create({
 });
 
 export default {
-  addCheckin(data) {
-    return apiClient.post("checkin", data);
+  addCheckIn(data) {
+    return apiClient.post("check-in", data);
   },
-  addCheckout(checkinId, landing) {
-    return apiClient.put("checkin/" + checkinId, landing);
+  addCheckOut(checkInId, landing) {
+    return apiClient.put("check-in/" + checkInId, landing);
   },
   fetchDB() {
-    return apiClient.get("checkin");
+    return apiClient.get("checki-n");
   },
-  deleteCheckin(checkinId) {
-    return apiClient.delete("checkin/" + checkinId);
+  deleteCheckIn(checkInId) {
+    return apiClient.delete("check-in/" + checkInId);
   },
 };

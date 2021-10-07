@@ -21,15 +21,15 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Routes
-const checkin = require("./routes/api/checkin");
-app.use("/api/checkin", checkin);
+const checkIn = require("./routes/api/checkIn");
+app.use("/api/check-in", checkIn);
 
 // Logging with Winston
 const logger = require("./config/winston");
 
 // DB Setup
 require("./config/mongoose");
-const CheckinModel = require("./models/Checkin");
+const CheckInModel = require("./models/CheckIn");
 
 let BASE_URL = "http://localhost:8080";
 if (process.env.NODE_ENV === "production") {

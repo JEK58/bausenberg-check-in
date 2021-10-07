@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const CheckinSchema = mongoose.Schema({
-  checkinDate: {
+const CheckInSchema = mongoose.Schema({
+  checkInDate: {
     type: Number,
     required: false,
   },
@@ -19,5 +19,5 @@ const CheckinSchema = mongoose.Schema({
   },
 });
 
-const Checkin = mongoose.model("Checkin", CheckinSchema);
-module.exports = Checkin;
+const CheckIn = mongoose.model("CheckIn", CheckInSchema);
+module.exports = CheckIn;

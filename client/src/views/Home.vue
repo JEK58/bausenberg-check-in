@@ -2,7 +2,7 @@
   <div class="container-fluid bg-dark h-100 pt-4 text-light">
     <div class="col-11 col-sm-10 col-xl-6 mx-auto full-height">
       <!-- Check-in -->
-      <div v-if="!checkinId">
+      <div v-if="!checkInId">
         <h4>Bausenberg Check-in</h4>
         <div class="row ms-0 mt-4">
           <input
@@ -39,8 +39,8 @@
             <button
               type="button"
               class="btn btn-danger"
-              @click="addCheckin"
-              :disabled="checkinButtonIsDisabled"
+              @click="addCheckIn"
+              :disabled="checkInButtonIsDisabled"
             >
               Check In
             </button>
@@ -119,31 +119,31 @@ export default {
       name: "",
       club: null,
       landing: null,
-      checkinId: null,
+      checkInId: null,
     };
   },
   methods: {
-    async addCheckin() {
-      const response = await API.addCheckin({
+    async addCheckIn() {
+      const response = await API.addCheckIn({
         name: this.name,
         club: this.club,
       });
       console.log(response);
-      if (response.status === 201) this.checkinId = response.data._id;
+      if (response.status === 201) this.checkInId = response.data._id;
     },
     async addCheckout() {
-      const response = await API.addCheckout(this.checkinId, {
+      const response = await API.addCheckout(this.checkInId, {
         landing: this.landing,
       });
       console.log(response);
       if (response.status === 201) {
-        this.checkinId = null;
+        this.checkInId = null;
         this.landing = null;
       }
     },
   },
   computed: {
-    checkinButtonIsDisabled() {
+    checkInButtonIsDisabled() {
       return !(this.name.length > 8 && this.club);
     },
     checkoutButtonIsDisabled() {

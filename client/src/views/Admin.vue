@@ -13,16 +13,16 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="checkin in checkins" :key="checkin._id">
-            <td>{{ checkin.name }}</td>
-            <td>{{ checkin.club }}</td>
-            <td>{{ checkin.landing }}</td>
-            <td>{{ formatDate(checkin.checkinDate) }}</td>
+          <tr v-for="checkIn in checkIns" :key="checkIn._id">
+            <td>{{ checkIn.name }}</td>
+            <td>{{ checkIn.club }}</td>
+            <td>{{ checkIn.landing }}</td>
+            <td>{{ formatDate(checkIn.checkInDate) }}</td>
             <td>
               <button
                 type="button"
                 class="btn btn-outline-danger btn-sm"
-                @click="deleteCheckin(checkin._id)"
+                @click="deleteCheckIn(checkIn._id)"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -75,14 +75,14 @@ export default {
   name: "Admin",
   components: {},
   data() {
-    return { checkins: [], loggedIn: true, databaseError: null, password: "" };
+    return { checkIns: [], loggedIn: true, databaseError: null, password: "" };
   },
   methods: {
     async fetchDB() {
       try {
         const response = await API.fetchDB();
         if (response.status === 200) {
-          this.checkins = response.data;
+          this.checkIns = response.data;
           this.databaseError = false;
         } else {
           this.databaseError = true;
@@ -96,9 +96,9 @@ export default {
       if (!timestamp) return "-";
       return format(new Date(timestamp), "dd.MM.yyyy - HH:mm");
     },
-    async deleteCheckin(checkinId) {
+    async deleteCheckIn(checkInId) {
       try {
-        const response = await API.deleteCheckin(checkinId);
+        const response = await API.deleteCheckIn(checkInId);
         if (response.status === 200) this.fetchDB();
       } catch (error) {
         console.log(error);

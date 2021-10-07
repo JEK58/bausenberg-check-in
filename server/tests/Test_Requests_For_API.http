@@ -1,8 +1,8 @@
-#Checkins
+#Check-ins
 
 
 ###
-POST http://localhost:3031/api/checkin HTTP/1.1
+POST http://localhost:3031/api/check-in HTTP/1.1
 content-type: application/json
 
 {
@@ -11,7 +11,7 @@ content-type: application/json
 }
 
 ###
-PUT http://localhost:3031/api/checkin/615e15f897ee4631ca3fc037 HTTP/1.1
+PUT http://localhost:3031/api/check-in/615e15f897ee4631ca3fc037 HTTP/1.1
 content-type: application/json
 
 {
@@ -19,7 +19,7 @@ content-type: application/json
 }
 
 ###
-GET http://localhost:3031/api/checkin
+GET http://localhost:3031/api/check-in
 # Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEzMzJiMmQxLTJmNDctNGMwOS1jMWQ4LTFhOGYzZDVlOWE4ZSIsImlhdCI6MTYyMzI2ODM1NiwiZXhwIjoxNjIzMjY4NDU2fQ.eg1xTXDUBb6OqJH103ay8p4FCqNw4NCmuVYuaaEic8c
 
 
