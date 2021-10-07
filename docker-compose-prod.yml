@@ -8,12 +8,14 @@ services:
     image: bausenberg-check-in-client
     container_name: bausenberg-check-in-client
     restart: always
+    ex
     labels:
       traefik.enable: true
       traefik.http.routers.bausenberg-check-in.rule: "Host(`bausenberg-check-in.stephanschoepe.de`)"
       traefik.http.routers.bausenberg-check-in.entrypoints: websecure
       traefik.http.routers.bausenberg-check-in.tls.certresolver: myresolver
       traefik.http.routers.bausenberg-check-in.priority: 100
+
       traefik.docker.network: traefik
 
   server:
@@ -28,11 +30,12 @@ services:
       - NODE_ENV=production
     labels:
       traefik.enable: true
-      traefik.http.routers.bausenberg-check-in-ws.rule: "Host(`bausenberg-check-in.stephanschoepe.de`)"
+      traefik.http.routers.bausenberg-check-in-ws.rule: "Host(`bausenberg-check-in.stephanschoepe.de`) && PathPrefix(`/api`)"
       traefik.http.routers.bausenberg-check-in-ws.entrypoints: websecure
       traefik.http.routers.bausenberg-check-in-ws.tls.certresolver: myresolver
-      traefik.http.services.bausenberg-check-in-ws.loadbalancer.server.port: 3031
       traefik.http.routers.bausenberg-check-in-ws.priority: 200
+      traefik.http.services.bausenberg-check-in-ws.loadbalancer.server.port: 3031
+
       traefik.docker.network: traefik
     command: ./docker-entrypoint.sh
 
