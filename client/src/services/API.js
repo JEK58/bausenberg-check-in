@@ -19,4 +19,10 @@ export default {
   addCheckout(checkinId, landing) {
     return apiClient.put("checkin/" + checkinId, landing);
   },
+  fetchDB() {
+    return apiClient.get("checkin");
+  },
+  deleteCheckin(checkinId) {
+    return apiClient.delete("checkin/" + checkinId);
+  },
 };

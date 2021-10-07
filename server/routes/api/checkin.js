@@ -49,13 +49,15 @@ router.put("/:id", async (req, res) => {
 });
 
 // Delete Checkin
-// router.delete("/:id", async (req, res) => {
-//   try {
-//     const response = await CheckinModel.findByIdAndDelete(req.params.id);
-//     res.status(200).send(response);
-//   } catch (error) {
-//     res.status(400).json("Error: " + error);
-//   }
-// });
+router.delete("/:id", async (req, res) => {
+  try {
+    const response = await CheckinModel.findByIdAndDelete(req.params.id);
+    logger.info(response);
+
+    res.status(200).send(response);
+  } catch (error) {
+    res.status(400).json("Error: " + error);
+  }
+});
 
 module.exports = router;
