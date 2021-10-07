@@ -132,7 +132,7 @@ export default {
       if (response.status === 201) this.checkInId = response.data._id;
     },
     async addCheckOut() {
-      const response = await API.addCheckout(this.checkInId, {
+      const response = await API.addCheckOut(this.checkInId, {
         landing: this.landing,
       });
       console.log(response);
