@@ -20,7 +20,7 @@ export default {
     return apiClient.put("check-in/" + checkInId, landing);
   },
   fetchDB() {
-    return apiClient.get("checki-n");
+    return apiClient.get("check-in");
   },
   deleteCheckIn(checkInId) {
     return apiClient.delete("check-in/" + checkInId);
