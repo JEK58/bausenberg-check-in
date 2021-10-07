@@ -1,29 +1,31 @@
 # bausenberg-check-in
 
-## Rebuild with docker
+Needs `DB_CONNECTION=` in .env
+
+### Rebuild with docker
 
 ```
 docker-compose -f docker-compose-prod.yml up --force-recreate --build
 ```
 
-## Todo
+### Todo
 
-## Frontend
+#### Frontend
 
 - [ ] More beautiful colors and design
 - [ ] Server offline warning
 - [ ] Make it more leightweight
 
-### Home
+#### Home
 
 - [ ] Store checkinId in local storage for 12 hours
 
-### Admin
+#### Admin
 
 - [ ] Admin Auth
 - [ ] Export
 
-## Backend
+### Backend
 
 - [ ] API Rate limit
 - [ ] Use local DB
