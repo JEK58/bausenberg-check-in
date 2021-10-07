@@ -8,7 +8,6 @@ services:
     image: bausenberg-check-in-client
     container_name: bausenberg-check-in-client
     restart: always
-    ex
     labels:
       traefik.enable: true
       traefik.http.routers.bausenberg-check-in.rule: "Host(`bausenberg-check-in.stephanschoepe.de`)"
