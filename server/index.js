@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Routes
-const checkIn = require("./routes/api/checkIn");
+const checkIn = require("./routes/api/check-in");
 app.use("/api/check-in", checkIn);
 
 // Logging with Winston
