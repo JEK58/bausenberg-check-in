@@ -153,7 +153,10 @@ export default {
         club: this.club,
       });
       console.log(response);
-      if (response.status === 201) this.checkInId = response.data._id;
+      if (response.status === 201) {
+        this.checkInId = response.data._id;
+        this.saveIdToLocalStorage(response.data._id, response.data.checkInDate);
+      }
     },
     async addCheckOut() {
       const response = await API.addCheckOut(this.checkInId, {
@@ -162,8 +165,29 @@ export default {
       console.log(response);
       if (response.status === 201) {
         this.showThankYou = true;
+        this.removeIdFromLocalStorage();
       }
     },
+    saveIdToLocalStorage(id, checkInDate) {
+      localStorage.setItem(
+        "check-in-id",
+        JSON.stringify({
+          id: id,
+          date: checkInDate,
+        })
+      );
+    },
+    getIdFromLocalStorage() {
+      if (localStorage.getItem("check-in-id") === null) return;
+
+      const { id } = JSON.parse(localStorage.getItem("check-in-id"));
+      this.checkInId = id;
+    },
+
+    removeIdFromLocalStorage() {
+      localStorage.removeItem("check-in-id");
+    },
+
     resetApp() {
       this.checkInId = null;
       this.landing = null;
@@ -177,6 +201,9 @@ export default {
     checkoutButtonIsDisabled() {
       return !this.landing;
     },
+  },
+  created() {
+    this.getIdFromLocalStorage();
   },
 };
 </script>
