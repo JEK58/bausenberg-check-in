@@ -62,7 +62,7 @@
       <!-- Checkout -->
       <div v-if="checkInId && showThankYou == false">
         <h4>Bausenberg Check-out</h4>
-        <div class="btn-group col mt-4" role="group">
+        <div class="btn-group-vertical col mt-4" role="group">
           <input
             type="radio"
             class="btn-check"
@@ -71,8 +71,10 @@
             value="Landewiese"
             v-model="landing"
           />
-          <label class="btn btn-outline-light" for="btn-regular-landing"
-            >Landewiese</label
+          <label
+            class="btn btn-outline-light text-start"
+            for="btn-regular-landing"
+            >Landewiese 👌</label
           >
 
           <input
@@ -83,8 +85,10 @@
             value="Notlandewiese"
             v-model="landing"
           />
-          <label class="btn btn-outline-light" for="btn-alternate-landing"
-            >Notlandewiese</label
+          <label
+            class="btn btn-outline-light text-start"
+            for="btn-alternate-landing"
+            >Notlandewiese 🧐</label
           >
           <input
             type="radio"
@@ -94,8 +98,8 @@
             value="Außenlandung"
             v-model="landing"
           />
-          <label class="btn btn-outline-light" for="btn-xc-landing"
-            >Außenlandung</label
+          <label class="btn btn-outline-light text-start" for="btn-xc-landing"
+            >Außenlandung 🎉</label
           >
         </div>
         <div class="my-3">
