@@ -208,7 +208,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 html,
 body {
   height: 100vh;
@@ -216,5 +216,9 @@ body {
 
 .full-height {
   height: 100vh;
+}
+a {
+  text-decoration: none;
+  color: steelblue;
 }
 </style>
