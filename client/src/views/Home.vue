@@ -2,7 +2,7 @@
   <div class="container-fluid bg-dark h-100 pt-4 text-light">
     <div class="col-11 col-sm-10 col-xl-6 mx-auto full-height">
       <!-- Check-in -->
-      <div v-if="!checkInId">
+      <div v-if="!checkInId && showThankYou == false">
         <h4>Bausenberg Check-in</h4>
         <div class="row ms-0 mt-4">
           <input
@@ -34,7 +34,7 @@
             <label class="btn btn-outline-light" for="btn-dgc">DGC</label>
           </div>
         </div>
-        <div class="my-3">
+        <div class="mt-3 mb-5">
           <div class="my-2 d-grid gap-2">
             <button
               type="button"
@@ -46,14 +46,21 @@
             </button>
           </div>
         </div>
-        <h6>Hinweis:</h6>
+        <h5>Hinweis:</h5>
         <p>
           Nach dem Flug bitte wieder auschecken und die genutzte Landewiese
-          angeben.
+          angeben. <br />Für jeden Flug muss ein Eintrag erstellt werden, auch
+          wenn dieser am selben Tag stattfindet.
+        </p>
+        <p>
+          Bei Problemen schicke bitte eine Mail an
+          <a href="mailto:email@example.com?subject=Bausenberg Check-in"
+            >email@example.com</a
+          >
         </p>
       </div>
       <!-- Checkout -->
-      <div v-else>
+      <div v-if="checkInId && showThankYou == false">
         <h4>Bausenberg Check-out</h4>
         <div class="btn-group col mt-4" role="group">
           <input
@@ -84,11 +91,11 @@
             class="btn-check"
             name="btnradio"
             id="btn-xc-landing"
-            value="Woanders"
+            value="Außenlandung"
             v-model="landing"
           />
           <label class="btn btn-outline-light" for="btn-xc-landing"
-            >Ganz woanders 🥳 🚀</label
+            >Außenlandung</label
           >
         </div>
         <div class="my-3">
@@ -100,6 +107,22 @@
               :disabled="checkoutButtonIsDisabled"
             >
               Check out
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Finish -->
+      <div v-if="showThankYou">
+        <h4>Danke!</h4>
+        <div class="my-3">
+          <p>
+            Du kannst das Fenster nun schließen, oder einen weiteren Flug
+            eintragen.
+          </p>
+
+          <div class="my-2 d-grid gap-2">
+            <button type="button" class="btn btn-success" @click="resetApp">
+              Neuer Flugbucheintrag
             </button>
           </div>
         </div>
@@ -120,6 +143,7 @@ export default {
       club: null,
       landing: null,
       checkInId: null,
+      showThankYou: false,
     };
   },
   methods: {
@@ -137,9 +161,13 @@ export default {
       });
       console.log(response);
       if (response.status === 201) {
-        this.checkInId = null;
-        this.landing = null;
+        this.showThankYou = true;
       }
+    },
+    resetApp() {
+      this.checkInId = null;
+      this.landing = null;
+      this.showThankYou = false;
     },
   },
   computed: {
