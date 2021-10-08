@@ -116,7 +116,7 @@
         <h4>Danke!</h4>
         <div class="my-3">
           <p>
-            Du kannst das Fenster nun schließen, oder einen weiteren Flug
+            Du kannst das Fenster nun schließen oder einen weiteren Flug
             eintragen.
           </p>
 
