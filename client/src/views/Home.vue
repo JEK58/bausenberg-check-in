@@ -152,21 +152,23 @@ export default {
         name: this.name,
         club: this.club,
       });
-      console.log(response);
       if (response.status === 201) {
         this.checkInId = response.data._id;
         this.saveIdToLocalStorage(response.data._id, response.data.checkInDate);
+        return;
       }
+      console.log(response);
     },
     async addCheckOut() {
       const response = await API.addCheckOut(this.checkInId, {
         landing: this.landing,
       });
-      console.log(response);
       if (response.status === 201) {
         this.showThankYou = true;
         this.removeIdFromLocalStorage();
+        return;
       }
+      console.log(response);
     },
     saveIdToLocalStorage(id, checkInDate) {
       localStorage.setItem(
