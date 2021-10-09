@@ -9,20 +9,31 @@ services:
     container_name: bausenberg-check-in-client
     restart: always
     ports:
-      - "80:80"
+      - 8000:80
 
-  # server:
-  #   image: node:16.2.0-alpine3.13
-  #   restart: always
-  #   container_name: bausenberg-check-in-server
+  server:
+    image: node:16.2.0-alpine3.13
+    restart: always
+    container_name: bausenberg-check-in-server
+    # environment:
+    #   - NODE_ENV=dev
 
-  #   working_dir: /bausenberg-check-in/server
-  #   volumes:
-  #     - ./:/bausenberg-check-in:rw
-  #   environment:
-  #     # - NODE_ENV=production
+    working_dir: /bausenberg-check-in/server
+    volumes:
+      - ./:/bausenberg-check-in:rw
 
-  #   command: ./docker-entrypoint.sh
+    command: ./docker-entrypoint.sh
+    ports:
+      - 3031:3031
+
+  db:
+    image: mongo
+    restart: always
+    container_name: bausenberg-check-in-db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=bausenberg-check-in
 # networks:
 #   default:
 #     external:

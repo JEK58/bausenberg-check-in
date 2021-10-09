@@ -3,6 +3,7 @@ export function getBaseUrl() {
     window.location.protocol.toString() +
     "//" +
     window.location.hostname.toString();
+    console.log(process.env.NODE_ENV);
   if (process.env.NODE_ENV == "development") {
     URL =
       window.location.protocol.toString() +
@@ -10,6 +11,5 @@ export function getBaseUrl() {
       window.location.hostname.toString() +
       ":3031";
   }
-
   return URL;
 }
