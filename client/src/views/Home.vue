@@ -40,7 +40,7 @@
               type="button"
               class="btn btn-danger"
               @click="addCheckIn"
-              :disabled="checkInButtonIsDisabled"
+              :disabled="!checkInButtonIsActive"
             >
               Check In
             </button>
@@ -201,8 +201,9 @@ export default {
     },
   },
   computed: {
-    checkInButtonIsDisabled() {
-      return !(this.name.length > 8 && this.club);
+    checkInButtonIsActive() {
+      const regex = /\w{3,} \w{3,}/;
+      return this.name.match(regex) && this.club;
     },
     checkoutButtonIsDisabled() {
       return !this.landing;
