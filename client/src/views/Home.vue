@@ -1,18 +1,21 @@
 <template>
   <div class="container-fluid bg-dark h-100 pt-4 text-light">
-    <div class="col-11 col-sm-10 col-xl-6 mx-auto full-height">
+    <div class="col-12 col-sm-10 col-md-8 col-xl-6 mx-auto full-height">
       <!-- Check-in -->
       <div v-if="!checkInId && showThankYou == false">
         <h4>Bausenberg Check-in</h4>
-        <div class="row ms-0 mt-4">
-          <input
-            type="text"
-            class="form-control col"
-            id="name"
-            placeholder="Name"
-            v-model="name"
-          />
-          <div class="btn-group col" role="group">
+        <div class="row mt-4">
+          <div class="col-12">
+            <input
+              type="text"
+              class="form-control col"
+              id="name"
+              placeholder="Voller Name"
+              v-model="name"
+            />
+          </div>
+
+          <div class="btn-group mt-2 col-12" role="group">
             <input
               type="radio"
               class="btn-check"
