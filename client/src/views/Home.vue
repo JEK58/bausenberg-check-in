@@ -48,6 +48,8 @@
               Check In
             </button>
           </div>
+          <h4>Debug</h4>
+          checkInButtonIsActive: {{ checkInButtonIsActive }}
         </div>
         <h5>Hinweis:</h5>
         <p>
@@ -206,7 +208,8 @@ export default {
   computed: {
     checkInButtonIsActive() {
       const regex = /\w{3,} \w{3,}/;
-      return this.name.match(regex) && this.club;
+      if (this.name.match(regex) && this.club) return true;
+      return false;
     },
     checkoutButtonIsDisabled() {
       return !this.landing;
