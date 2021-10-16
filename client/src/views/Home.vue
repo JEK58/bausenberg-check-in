@@ -12,6 +12,7 @@
               id="name"
               placeholder="Voller Name"
               v-model="name"
+              @change="validateInputs"
             />
           </div>
 
@@ -23,6 +24,7 @@
               id="btn-rml"
               value="RML"
               v-model="club"
+              @change="validateInputs"
             />
             <label class="btn btn-outline-light" for="btn-rml">RML</label>
 
@@ -33,6 +35,7 @@
               id="btn-dgc"
               value="DGC"
               v-model="club"
+              @change="validateInputs"
             />
             <label class="btn btn-outline-light" for="btn-dgc">DGC</label>
           </div>
@@ -152,6 +155,7 @@ export default {
       club: null,
       landing: null,
       checkInId: null,
+      checkInButtonIsActive: false,
       showThankYou: false,
     };
   },
@@ -204,13 +208,24 @@ export default {
       this.landing = null;
       this.showThankYou = false;
     },
+
+    validateInputs() {
+      const regex = /\w{3,} \w{3,}/;
+      console.log("validating");
+
+      if (this.name.match(regex) && this.club) {
+        this.checkInButtonIsActive = true;
+      } else {
+        this.checkInButtonIsActive = false;
+      }
+    },
+  },
+  watch: {
+    name() {
+      this.validateInputs();
+    },
   },
   computed: {
-    checkInButtonIsActive() {
-      const regex = /\w{3,} \w{3,}/;
-      if (this.name.match(regex) && this.club) return true;
-      return false;
-    },
     checkoutButtonIsDisabled() {
       return !this.landing;
     },
