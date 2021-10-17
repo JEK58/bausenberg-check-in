@@ -1,11 +1,26 @@
 # bausenberg-check-in
 
-Needs `DB_CONNECTION=` in .env
+Needs .env with:
+
+```
+MONGO_ROOT_USER=
+MONGO_ROOT_PASSWORD=
+
+DB_CONNECTION=mongodb://MONGO_ROOT_USER:MONGO_ROOT_PASSWORD@db:27017/bausenberg-check-in?authSource=admin
+```
 
 ### Rebuild with docker
 
+#### Production
+
 ```
 docker-compose -f docker-compose-prod.yml up --force-recreate --build
+```
+
+#### Development
+
+```
+docker-compose -f docker-compose-dev.yml up --force-recreate --build
 ```
 
 ### Todo
