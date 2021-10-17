@@ -12,7 +12,7 @@ services:
       - server
     labels:
       traefik.enable: true
-      traefik.http.routers.bausenberg-check-in.rule: "Host(${DOMAIN})"
+      traefik.http.routers.bausenberg-check-in.rule: "Host(`${DOMAIN}`)"
       traefik.http.routers.bausenberg-check-in.entrypoints: websecure
       traefik.http.routers.bausenberg-check-in.tls.certresolver: myresolver
       traefik.http.routers.bausenberg-check-in.priority: 100
@@ -36,7 +36,7 @@ services:
       - ADMIN_USERNAME=${ADMIN_USERNAME}
     labels:
       traefik.enable: true
-      traefik.http.routers.bausenberg-check-in-ws.rule: "Host(${DOMAIN}) && PathPrefix(`/api`)"
+      traefik.http.routers.bausenberg-check-in-ws.rule: "Host(`${DOMAIN}`) && PathPrefix(`/api`)"
       traefik.http.routers.bausenberg-check-in-ws.entrypoints: websecure
       traefik.http.routers.bausenberg-check-in-ws.tls.certresolver: myresolver
       traefik.http.routers.bausenberg-check-in-ws.priority: 200
