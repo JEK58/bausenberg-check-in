@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: bausenberg-check-in-client
+    container_name: bausenberg-check-in-client
+    restart: always
+    ports:
+      - 8000:80
+
+  server:
+    image: node:16.2.0-alpine3.13
+    restart: always
+    container_name: bausenberg-check-in-server
+    environment:
+      - NODE_ENV=development
+      - DB_CONNECTION=${DB_CONNECTION}
+      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+
+    working_dir: /bausenberg-check-in/server
+    volumes:
+      - ./:/bausenberg-check-in:rw
+
+    command: ./docker-entrypoint.sh
+    ports:
+      - 3031:3031
+
+  db:
+    image: mongo
+    restart: always
+    container_name: bausenberg-check-in-db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+
+    volumes:
+      - db:/data/db
+
+  # mongo-express:
+  #   image: mongo-express
+  #   environment:
+  #     - ME_CONFIG_MONGODB_SERVER=db
+  #     - ME_CONFIG_MONGODB_PORT=27017
+  #     - ME_CONFIG_MONGODB_ENABLE_ADMIN=false
+  #     - ME_CONFIG_MONGODB_AUTH_DATABASE=admin
+  #     - ME_CONFIG_MONGODB_AUTH_USERNAME=${MONGO_ROOT_USER}
+  #     - ME_CONFIG_MONGODB_AUTH_PASSWORD=${MONGO_ROOT_PASSWORD}
+  #     - ME_CONFIG_BASICAUTH_USERNAME=${MONGOEXPRESS_LOGIN}
+  #     - ME_CONFIG_BASICAUTH_PASSWORD=${MONGOEXPRESS_PASSWORD}
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - "8888:8081"
+volumes:
+  db:

@@ -5,15 +5,14 @@ const router = express.Router();
 
 const CheckInModel = require("../../models/Check-In");
 
-// Add Check-in
-router.post("/", async (req, res) => {
+// Add landing to checkIn
+router.put("/:id", async (req, res) => {
   try {
-    const checkIn = new CheckInModel({
-      name: req.body.name,
-      checkInDate: Date.now(),
-      club: req.body.club,
+    const query = { _id: req.params.id };
+    const response = await CheckInModel.findOneAndUpdate(query, {
+      landing: req.body.landing,
+      checkOutDate: Date.now(),
     });
-    const response = await checkIn.save();
     logger.info(response);
     res.status(201).send(response);
   } catch (error) {
@@ -21,5 +20,4 @@ router.post("/", async (req, res) => {
     res.status(400).json("Error: " + error);
   }
 });
-
 module.exports = router;

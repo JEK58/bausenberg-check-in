@@ -5,6 +5,10 @@ const CheckInSchema = mongoose.Schema({
     type: Number,
     required: false,
   },
+  checkOutDate: {
+    type: Number,
+    required: false,
+  },
   name: {
     type: String,
     required: false,

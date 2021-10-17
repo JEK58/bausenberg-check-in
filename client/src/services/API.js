@@ -17,12 +17,16 @@ export default {
     return apiClient.post("check-in", data);
   },
   addCheckOut(checkInId, landing) {
-    return apiClient.put("check-in/" + checkInId, landing);
+    return apiClient.put("check-out/" + checkInId, landing);
   },
-  fetchDB() {
-    return apiClient.get("check-in");
+  fetchDB(auth) {
+    return apiClient.get("admin", {
+      auth: auth,
+    });
   },
-  deleteCheckIn(checkInId) {
-    return apiClient.delete("check-in/" + checkInId);
+  deleteCheckIn(checkInId, auth) {
+    return apiClient.delete("admin/" + checkInId, {
+      auth: auth,
+    });
   },
 };

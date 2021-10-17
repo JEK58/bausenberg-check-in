@@ -2,6 +2,28 @@
   <div class="container-fluid h-100 pt-4">
     <h4>Bausenberg Admin Panel</h4>
 
+    <!-- Refresh Button -->
+    <div v-if="loggedIn" class="text-end">
+      <button type="button" class="btn btn-primary btn-sm" @click="fetchDB">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          class="bi bi-arrow-repeat"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"
+          />
+          <path
+            fill-rule="evenodd"
+            d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"
+          />
+        </svg>
+      </button>
+    </div>
+
     <div v-if="loggedIn">
       <table class="table">
         <thead>
@@ -46,22 +68,34 @@
         </tbody>
       </table>
     </div>
+    <!-- Login -->
     <div v-else class="container login-prompt">
       <form class="px-4 py-3" @submit.prevent="handleLogin">
         <div class="mb-3">
-          <label for="exampleDropdownFormPassword1" class="form-label"></label>
+          <label for="username" class="form-label"></label>
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            placeholder="Username"
+            v-model="username"
+          />
+
+          <label for="password" class="form-label"></label>
           <input
             type="password"
             class="form-control"
-            id="exampleDropdownFormPassword1"
+            id="password"
             placeholder="Passwort"
             v-model="password"
           />
         </div>
+        <div v-if="loginError">
+          <p class="text-danger">Username oder Passwort falsch</p>
+        </div>
         <div class="d-grid gap-2">
           <button type="submit" class="btn btn-primary">Login</button>
         </div>
-        <pre class="m-3">Password is "pw"</pre>
       </form>
     </div>
   </div>
@@ -75,21 +109,29 @@ export default {
   name: "Admin",
   components: {},
   data() {
-    return { checkIns: [], loggedIn: true, databaseError: null, password: "" };
+    return {
+      checkIns: [],
+      loggedIn: false,
+      loginError: false,
+      username: "",
+      password: "",
+    };
   },
   methods: {
     async fetchDB() {
       try {
-        const response = await API.fetchDB();
+        const response = await API.fetchDB(this.authData);
         if (response.status === 200) {
           this.checkIns = response.data;
-          this.databaseError = false;
+          this.loggedIn = true;
+          this.loginError = false;
         } else {
-          this.databaseError = true;
+          this.loggedIn = false;
+          this.loginError = true;
         }
       } catch (error) {
         console.log(error);
-        this.databaseError = true;
+        this.loginError = true;
       }
     },
     formatDate(timestamp) {
@@ -98,21 +140,25 @@ export default {
     },
     async deleteCheckIn(checkInId) {
       try {
-        const response = await API.deleteCheckIn(checkInId);
+        const response = await API.deleteCheckIn(checkInId, this.authData);
         if (response.status === 200) this.fetchDB();
       } catch (error) {
         console.log(error);
       }
     },
-    handleLogin() {
-      // TODO: remove this:D
-      if (this.password === "pw") this.loggedIn = true;
+    async handleLogin() {
+      this.fetchDB();
     },
   },
-  created() {
-    this.fetchDB();
+  created() {},
+  computed: {
+    authData() {
+      return {
+        username: this.username,
+        password: this.password,
+      };
+    },
   },
-  computed: {},
 };
 </script>
 <style scoped>
