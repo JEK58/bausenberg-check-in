@@ -1,13 +1,6 @@
 # bausenberg-check-in
 
-Needs .env with:
-
-```
-MONGO_ROOT_USER=
-MONGO_ROOT_PASSWORD=
-
-DB_CONNECTION=mongodb://MONGO_ROOT_USER:MONGO_ROOT_PASSWORD@db:27017/bausenberg-check-in?authSource=admin
-```
+Needs .env! See .env-sample
 
 ### Rebuild with docker
 
@@ -29,6 +22,7 @@ docker-compose -f docker-compose-dev.yml up --force-recreate --build
 
 - [ ] More beautiful colors and design
 - [ ] Server offline warning
+- [ ] Error handling
 - [ ] Make it more leightweight
 
 #### Home
@@ -39,10 +33,11 @@ docker-compose -f docker-compose-dev.yml up --force-recreate --build
 
 #### Admin
 
-- [ ] Admin Auth
+- [x] Admin Auth
+- [x] Refresh button
 - [ ] Export
 
 ### Backend
 
 - [ ] API Rate limit
-- [ ] Use local DB
+- [x] Use local DB
