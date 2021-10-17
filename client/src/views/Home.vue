@@ -49,10 +49,12 @@
               Check In
             </button>
           </div>
-          <h4>Debug</h4>
-          checkInButtonIsActive: {{ checkInButtonIsActive }} <br />
-          name value:
-          {{ name }}
+          <div v-if="showDebug">
+            <h4>Debug</h4>
+            checkInButtonIsActive: {{ checkInButtonIsActive }} <br />
+            name value:
+            {{ name }}
+          </div>
         </div>
         <h5>Hinweis:</h5>
         <p>
@@ -156,6 +158,7 @@ export default {
       landing: null,
       checkInId: null,
       showThankYou: false,
+      showDebug: false,
     };
   },
   methods: {
