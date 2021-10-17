@@ -20,6 +20,7 @@ docker-compose -f docker-compose-prod.yml up --force-recreate --build
 
 - [x] Store checkInId in local storage
 - [ ] Add expiration to local storage
+- [ ] Add ö,ä,ü to regex input validation
 
 #### Admin
 

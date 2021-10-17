@@ -11,7 +11,8 @@
               class="form-control col"
               id="name"
               placeholder="Voller Name"
-              v-model="name"
+              :value="name"
+              @input="(evt) => (name = evt.target.value)"
             />
           </div>
 
@@ -48,6 +49,10 @@
               Check In
             </button>
           </div>
+          <h4>Debug</h4>
+          checkInButtonIsActive: {{ checkInButtonIsActive }} <br />
+          name value:
+          {{ name }}
         </div>
         <h5>Hinweis:</h5>
         <p>
@@ -206,7 +211,8 @@ export default {
   computed: {
     checkInButtonIsActive() {
       const regex = /\w{3,} \w{3,}/;
-      return this.name.match(regex) && this.club;
+      if (this.name.match(regex) && this.club) return true;
+      return false;
     },
     checkoutButtonIsDisabled() {
       return !this.landing;
