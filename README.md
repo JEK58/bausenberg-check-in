@@ -21,6 +21,7 @@ docker-compose -f docker-compose-dev.yml up --force-recreate --build
 #### Frontend
 
 - [ ] More beautiful colors and design
+- [ ] Spinner after checkin button pressed
 - [ ] Server offline warning
 - [ ] Error handling
 - [ ] Make it more leightweight
