@@ -17,15 +17,15 @@ export default {
     return apiClient.post("check-in", data);
   },
   addCheckOut(checkInId, landing) {
-    return apiClient.put("check-in/" + checkInId, landing);
+    return apiClient.put("check-out/" + checkInId, landing);
   },
   fetchDB(auth) {
-    return apiClient.get("check-in", {
+    return apiClient.get("admin", {
       auth: auth,
     });
   },
   deleteCheckIn(checkInId, auth) {
-    return apiClient.delete("check-in/" + checkInId, {
+    return apiClient.delete("admin/" + checkInId, {
       auth: auth,
     });
   },

@@ -48,6 +48,9 @@
             >
               Check In
             </button>
+            <div v-if="showTooManyRequestsWarning" class="mt-4 text-warning">
+              Du scheinst zu viele Flüge in zu kurzer Zeit melden zu wollen.
+            </div>
           </div>
           <div v-if="showDebug">
             <h4>Debug</h4>
@@ -124,6 +127,11 @@
             </button>
           </div>
         </div>
+        <div class="my-2 d-grid gap-2">
+          <button type="button" class="btn btn-success" @click="resetApp">
+            Neuer Flugbucheintrag
+          </button>
+        </div>
       </div>
       <!-- Finish -->
       <div v-if="showThankYou">
@@ -159,20 +167,32 @@ export default {
       checkInId: null,
       showThankYou: false,
       showDebug: false,
+      showTooManyRequestsWarning: false,
     };
   },
   methods: {
     async addCheckIn() {
-      const response = await API.addCheckIn({
-        name: this.name,
-        club: this.club,
-      });
-      if (response.status === 201) {
-        this.checkInId = response.data._id;
-        this.saveIdToLocalStorage(response.data._id, response.data.checkInDate);
-        return;
+      try {
+        const response = await API.addCheckIn({
+          name: this.name,
+          club: this.club,
+        });
+        if (response.status === 201) {
+          this.checkInId = response.data._id;
+          this.saveIdToLocalStorage(
+            response.data._id,
+            response.data.checkInDate
+          );
+          return;
+        }
+      } catch (error) {
+        console.log(error);
+        if (error.response.status === 429) {
+          this.showTooManyRequestsWarning = true;
+          console.log(error.response.data);
+          return;
+        }
       }
-      console.log(response);
     },
     async addCheckOut() {
       const response = await API.addCheckOut(this.checkInId, {
@@ -209,6 +229,7 @@ export default {
       this.checkInId = null;
       this.landing = null;
       this.showThankYou = false;
+      this.showTooManyRequestsWarning = false;
     },
   },
   computed: {
