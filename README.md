@@ -40,5 +40,5 @@ docker-compose -f docker-compose-dev.yml up --force-recreate --build
 
 ### Backend
 
-- [ ] API Rate limit
+- [x] API Rate limit
 - [x] Use local DB
