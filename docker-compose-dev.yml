@@ -18,6 +18,8 @@ services:
     environment:
       - NODE_ENV=development
       - DB_CONNECTION=${DB_CONNECTION}
+      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
 
     working_dir: /bausenberg-check-in/server
     volumes:
@@ -53,9 +55,5 @@ services:
   #     - db
   #   ports:
   #     - "8888:8081"
-# networks:
-#   default:
-#     external:
-#       name: traefik
 volumes:
   db:

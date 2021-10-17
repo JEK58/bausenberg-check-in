@@ -8,9 +8,11 @@ services:
     image: bausenberg-check-in-client
     container_name: bausenberg-check-in-client
     restart: always
+    depends_on:
+      - server
     labels:
       traefik.enable: true
-      traefik.http.routers.bausenberg-check-in.rule: "Host(`bausenberg-check-in.stephanschoepe.de`)"
+      traefik.http.routers.bausenberg-check-in.rule: "Host(${DOMAIN})"
       traefik.http.routers.bausenberg-check-in.entrypoints: websecure
       traefik.http.routers.bausenberg-check-in.tls.certresolver: myresolver
       traefik.http.routers.bausenberg-check-in.priority: 100
@@ -21,6 +23,8 @@ services:
     image: node:16.2.0-alpine3.13
     restart: always
     container_name: bausenberg-check-in-server
+    depends_on:
+      - db
 
     working_dir: /bausenberg-check-in/server
     volumes:
@@ -29,7 +33,7 @@ services:
       - NODE_ENV=production
     labels:
       traefik.enable: true
-      traefik.http.routers.bausenberg-check-in-ws.rule: "Host(`bausenberg-check-in.stephanschoepe.de`) && PathPrefix(`/api`)"
+      traefik.http.routers.bausenberg-check-in-ws.rule: "Host(${DOMAIN}) && PathPrefix(`/api`)"
       traefik.http.routers.bausenberg-check-in-ws.entrypoints: websecure
       traefik.http.routers.bausenberg-check-in-ws.tls.certresolver: myresolver
       traefik.http.routers.bausenberg-check-in-ws.priority: 200
@@ -37,6 +41,20 @@ services:
 
       traefik.docker.network: traefik
     command: ./docker-entrypoint.sh
+
+  db:
+    image: mongo
+    restart: always
+    container_name: bausenberg-check-in-db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+
+    volumes:
+      - db:/data/db
+
+volumes:
+  db:
 
 networks:
   default:

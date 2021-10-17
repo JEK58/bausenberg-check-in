@@ -19,10 +19,14 @@ export default {
   addCheckOut(checkInId, landing) {
     return apiClient.put("check-in/" + checkInId, landing);
   },
-  fetchDB() {
-    return apiClient.get("check-in");
+  fetchDB(auth) {
+    return apiClient.get("check-in", {
+      auth: auth,
+    });
   },
-  deleteCheckIn(checkInId) {
-    return apiClient.delete("check-in/" + checkInId);
+  deleteCheckIn(checkInId, auth) {
+    return apiClient.delete("check-in/" + checkInId, {
+      auth: auth,
+    });
   },
 };

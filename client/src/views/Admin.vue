@@ -49,19 +49,30 @@
     <div v-else class="container login-prompt">
       <form class="px-4 py-3" @submit.prevent="handleLogin">
         <div class="mb-3">
-          <label for="exampleDropdownFormPassword1" class="form-label"></label>
+          <label for="username" class="form-label"></label>
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            placeholder="Username"
+            v-model="username"
+          />
+
+          <label for="password" class="form-label"></label>
           <input
             type="password"
             class="form-control"
-            id="exampleDropdownFormPassword1"
+            id="password"
             placeholder="Passwort"
             v-model="password"
           />
         </div>
+        <div v-if="loginError">
+          <p class="text-danger">Username oder Passwort falsch</p>
+        </div>
         <div class="d-grid gap-2">
           <button type="submit" class="btn btn-primary">Login</button>
         </div>
-        <pre class="m-3">Password is "pw"</pre>
       </form>
     </div>
   </div>
@@ -75,21 +86,29 @@ export default {
   name: "Admin",
   components: {},
   data() {
-    return { checkIns: [], loggedIn: true, databaseError: null, password: "" };
+    return {
+      checkIns: [],
+      loggedIn: false,
+      loginError: false,
+      username: "",
+      password: "",
+    };
   },
   methods: {
     async fetchDB() {
       try {
-        const response = await API.fetchDB();
+        const response = await API.fetchDB(this.authData);
         if (response.status === 200) {
           this.checkIns = response.data;
-          this.databaseError = false;
+          this.loggedIn = true;
+          this.loginError = false;
         } else {
-          this.databaseError = true;
+          this.loggedIn = false;
+          this.loginError = true;
         }
       } catch (error) {
         console.log(error);
-        this.databaseError = true;
+        this.loginError = true;
       }
     },
     formatDate(timestamp) {
@@ -98,21 +117,25 @@ export default {
     },
     async deleteCheckIn(checkInId) {
       try {
-        const response = await API.deleteCheckIn(checkInId);
+        const response = await API.deleteCheckIn(checkInId, this.authData);
         if (response.status === 200) this.fetchDB();
       } catch (error) {
         console.log(error);
       }
     },
-    handleLogin() {
-      // TODO: remove this:D
-      if (this.password === "pw") this.loggedIn = true;
+    async handleLogin() {
+      this.fetchDB();
     },
   },
-  created() {
-    this.fetchDB();
+  created() {},
+  computed: {
+    authData() {
+      return {
+        username: this.username,
+        password: this.password,
+      };
+    },
   },
-  computed: {},
 };
 </script>
 <style scoped>
