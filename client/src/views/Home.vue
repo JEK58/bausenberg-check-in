@@ -127,11 +127,6 @@
             </button>
           </div>
         </div>
-        <div class="my-2 d-grid gap-2">
-          <button type="button" class="btn btn-success" @click="resetApp">
-            Neuer Flugbucheintrag
-          </button>
-        </div>
       </div>
       <!-- Finish -->
       <div v-if="showThankYou">
