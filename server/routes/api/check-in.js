@@ -39,6 +39,7 @@ router.put("/:id", async (req, res) => {
     const query = { _id: req.params.id };
     const response = await CheckInModel.findOneAndUpdate(query, {
       landing: req.body.landing,
+      checkOutDate: Date.now(),
     });
     logger.info(response);
     res.status(201).send(response);
