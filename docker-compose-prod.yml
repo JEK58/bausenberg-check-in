@@ -31,6 +31,9 @@ services:
       - ./:/bausenberg-check-in:rw
     environment:
       - NODE_ENV=production
+      - DB_CONNECTION=${DB_CONNECTION}
+      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
     labels:
       traefik.enable: true
       traefik.http.routers.bausenberg-check-in-ws.rule: "Host(${DOMAIN}) && PathPrefix(`/api`)"
@@ -43,7 +46,7 @@ services:
     command: ./docker-entrypoint.sh
 
   db:
-    image: mongo
+    image: mongo:4
     restart: always
     container_name: bausenberg-check-in-db
     environment:
