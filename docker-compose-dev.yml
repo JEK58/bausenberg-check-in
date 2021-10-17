@@ -16,7 +16,7 @@ services:
     restart: always
     container_name: bausenberg-check-in-server
     environment:
-      - NODE_ENV=dev
+      - NODE_ENV=development
       - DB_CONNECTION=${DB_CONNECTION}
 
     working_dir: /bausenberg-check-in/server

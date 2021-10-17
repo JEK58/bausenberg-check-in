@@ -1,4 +1,10 @@
 #!/bin/sh
-
 npm install
-npm run start
+
+if [ $NODE_ENV == "production" ]
+then
+    # https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md#cmd
+    node app.js 
+else
+    npm run serve
+fi
