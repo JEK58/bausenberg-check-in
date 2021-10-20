@@ -161,6 +161,14 @@
           </div>
         </div>
       </div>
+      <!-- Footer -->
+      <footer class="mt-5">
+        <p>
+          <a href="https://www.thermik4u.de/index.php/impressum">Datenschutz</a>
+          ·
+          <a href="https://www.thermik4u.de/index.php/disclaimer">Impressum</a>
+        </p>
+      </footer>
     </div>
   </div>
 </template>
