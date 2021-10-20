@@ -69,13 +69,13 @@
         <h5>Hinweis:</h5>
         <p>
           Nach dem Flug bitte wieder auschecken und die genutzte Landewiese
-          angeben. <br />Für jeden Flug muss ein Eintrag erstellt werden, auch
+          angeben. <br />Für jeden Flug muss ein Eintrag erstellt werden - auch
           wenn dieser am selben Tag stattfindet.
         </p>
         <p>
           Bei Problemen schicke bitte eine Mail an
           <a href="mailto:bausenberg@thermik4u.de?subject=Bausenberg Check-in"
-            >bausenberg@thermik4u.de?</a
+            >bausenberg@thermik4u.de</a
           >
         </p>
       </div>
@@ -179,7 +179,6 @@ export default {
       checkInId: null,
       showThankYou: false,
       showDebug: false,
-      landingOptions: ["Landewiese 👌", "Notlandewiese 🧐", "Außenlandung 🎉"],
       showTooManyRequestsWarning: false,
       showSpinner: false,
     };
@@ -203,30 +202,42 @@ export default {
           return;
         }
       } catch (error) {
-        console.log(error);
-        if (error.response.status === 429) {
+        if (!error.response) {
+          return console.log("Connection Error");
+        }
+        if (error.response?.status === 429) {
           this.showTooManyRequestsWarning = true;
           this.showSpinner = false;
-
-          console.log(error.response.data);
           return;
         }
       }
     },
     async addCheckOut() {
-      this.showSpinner = true;
+      try {
+        this.showSpinner = true;
 
-      const response = await API.addCheckOut(this.checkInId, {
-        landing: this.landing,
-      });
-      if (response.status === 201) {
-        this.showThankYou = true;
-        this.removeIdFromLocalStorage();
-        this.showSpinner = false;
+        const response = await API.addCheckOut(this.checkInId, {
+          landing: this.landing,
+        });
+        if (response.status === 201) {
+          this.showThankYou = true;
+          this.removeIdFromLocalStorage();
+          this.showSpinner = false;
+          return;
+        }
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+        if (error.response.status === 400) {
+          // Escape if there is something wrong with the server.
+          // User doesn't care. Dirty but good enough.
+          this.showThankYou = true;
+          this.removeIdFromLocalStorage();
+          this.showSpinner = false;
 
-        return;
+          return;
+        }
       }
-      console.log(response);
     },
     saveIdToLocalStorage(id, checkInDate) {
       localStorage.setItem(
@@ -253,6 +264,7 @@ export default {
       this.landing = null;
       this.showThankYou = false;
       this.showTooManyRequestsWarning = false;
+      this.showSpinner = false;
     },
   },
   computed: {
