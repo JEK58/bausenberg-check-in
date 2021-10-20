@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 // Error handling
 // TODO: is this doing what i want it to do?
 process.on("uncaughtException", (err) => {
-  console.error("There was an uncaught error", err);
+  logger.error("There was an uncaught error", err);
   process.exit(1); //mandatory (as per the Node.js docs)
 });
 
@@ -51,15 +51,6 @@ const logger = require("./config/winston");
 // DB Setup
 require("./config/mongoose");
 const CheckInModel = require("./models/Check-In");
-
-// let BASE_URL = "http://localhost:8080";
-// if (process.env.NODE_ENV === "production") {
-//   BASE_URL = "https://bausenberg-check-in.stephanschoepe.de";
-// }
-
-// const options = {
-//   cors: { origin: [BASE_URL] },
-// };
 
 const port = process.env.PORT || 3031;
 
