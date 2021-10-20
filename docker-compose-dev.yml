@@ -1,15 +1,17 @@
 version: "3.8"
 
 services:
-  client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    image: bausenberg-check-in-client
-    container_name: bausenberg-check-in-client
-    restart: always
-    ports:
-      - 8000:80
+  # client:
+  #   build:
+  #     context: ./client
+  #     dockerfile: Dockerfile
+  #   image: bausenberg-check-in-client
+  #   container_name: bausenberg-check-in-client
+  #   environment:
+  #     - NODE_ENV=development
+  #   restart: always
+  #   ports:
+  #     - 8000:80
 
   server:
     image: node:16.2.0-alpine3.13
