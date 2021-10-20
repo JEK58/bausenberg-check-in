@@ -1,11 +1,5 @@
 # bausenberg-check-in
 
-## Rebuild with docker
-
-```
-docker-compose -f docker-compose-prod.yml up --force-recreate --build
-```
-
 ## Project setup
 
 ```

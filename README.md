@@ -14,6 +14,7 @@ docker-compose -f docker-compose-prod.yml up --force-recreate --build
 
 ```
 docker-compose -f docker-compose-dev.yml up --force-recreate --build
+/client: yarn serve
 ```
 
 ### Todo
@@ -30,12 +31,14 @@ docker-compose -f docker-compose-dev.yml up --force-recreate --build
 
 - [x] Store checkInId in local storage
 - [ ] Add expiration to local storage
+- [ ] Show time left till on API rate limit error
 - [ ] Add ö,ä,ü to regex input validation
 
 #### Admin
 
 - [x] Admin Auth
 - [x] Refresh button
+- [ ] Delete entry modal => are you sure?
 - [ ] Export
 
 ### Backend

@@ -47,6 +47,13 @@
               :disabled="!checkInButtonIsActive"
             >
               Check In
+              <div
+                v-if="showSpinner"
+                class="spinner-border spinner-border-sm"
+                role="status"
+              >
+                <span class="visually-hidden">Loading...</span>
+              </div>
             </button>
             <div v-if="showTooManyRequestsWarning" class="mt-4 text-warning">
               Du scheinst zu viele Flüge in zu kurzer Zeit melden zu wollen.
@@ -67,54 +74,57 @@
         </p>
         <p>
           Bei Problemen schicke bitte eine Mail an
-          <a href="mailto:email@example.com?subject=Bausenberg Check-in"
-            >email@example.com</a
+          <a href="mailto:bausenberg@thermik4u.de?subject=Bausenberg Check-in"
+            >bausenberg@thermik4u.de?</a
           >
         </p>
       </div>
       <!-- Checkout -->
       <div v-if="checkInId && showThankYou == false">
         <h4>Bausenberg Check-out</h4>
-        <div class="btn-group-vertical col mt-4" role="group">
-          <input
-            type="radio"
-            class="btn-check"
-            name="btnradio"
-            id="btn-regular-landing"
-            value="Landewiese"
-            v-model="landing"
-          />
-          <label
-            class="btn btn-outline-light text-start"
-            for="btn-regular-landing"
-            >Landewiese 👌</label
-          >
+        <div class="d-grid gap-2">
+          <div class="btn-group-vertical btn-group-lg col mt-4" role="group">
+            <input
+              type="radio"
+              class="btn-check"
+              name="btnradio"
+              id="btn-regular-landing"
+              value="Landewiese"
+              v-model="landing"
+            />
+            <label
+              class="btn btn-outline-light text-start"
+              for="btn-regular-landing"
+              >Landewiese 👌</label
+            >
 
-          <input
-            type="radio"
-            class="btn-check"
-            name="btnradio"
-            id="btn-alternate-landing"
-            value="Notlandewiese"
-            v-model="landing"
-          />
-          <label
-            class="btn btn-outline-light text-start"
-            for="btn-alternate-landing"
-            >Notlandewiese 🧐</label
-          >
-          <input
-            type="radio"
-            class="btn-check"
-            name="btnradio"
-            id="btn-xc-landing"
-            value="Außenlandung"
-            v-model="landing"
-          />
-          <label class="btn btn-outline-light text-start" for="btn-xc-landing"
-            >Außenlandung 🎉</label
-          >
+            <input
+              type="radio"
+              class="btn-check"
+              name="btnradio"
+              id="btn-alternate-landing"
+              value="Notlandewiese"
+              v-model="landing"
+            />
+            <label
+              class="btn btn-outline-light text-start"
+              for="btn-alternate-landing"
+              >Notlandewiese 🧐</label
+            >
+            <input
+              type="radio"
+              class="btn-check"
+              name="btnradio"
+              id="btn-xc-landing"
+              value="Außenlandung"
+              v-model="landing"
+            />
+            <label class="btn btn-outline-light text-start" for="btn-xc-landing"
+              >Außenlandung 🎉</label
+            >
+          </div>
         </div>
+
         <div class="my-3">
           <div class="my-2 d-grid gap-2">
             <button
@@ -124,6 +134,13 @@
               :disabled="checkoutButtonIsDisabled"
             >
               Check out
+              <div
+                v-if="showSpinner"
+                class="spinner-border spinner-border-sm"
+                role="status"
+              >
+                <span class="visually-hidden">Loading...</span>
+              </div>
             </button>
           </div>
         </div>
@@ -162,12 +179,15 @@ export default {
       checkInId: null,
       showThankYou: false,
       showDebug: false,
+      landingOptions: ["Landewiese 👌", "Notlandewiese 🧐", "Außenlandung 🎉"],
       showTooManyRequestsWarning: false,
+      showSpinner: false,
     };
   },
   methods: {
     async addCheckIn() {
       try {
+        this.showSpinner = true;
         const response = await API.addCheckIn({
           name: this.name,
           club: this.club,
@@ -178,24 +198,32 @@ export default {
             response.data._id,
             response.data.checkInDate
           );
+          this.showSpinner = false;
+
           return;
         }
       } catch (error) {
         console.log(error);
         if (error.response.status === 429) {
           this.showTooManyRequestsWarning = true;
+          this.showSpinner = false;
+
           console.log(error.response.data);
           return;
         }
       }
     },
     async addCheckOut() {
+      this.showSpinner = true;
+
       const response = await API.addCheckOut(this.checkInId, {
         landing: this.landing,
       });
       if (response.status === 201) {
         this.showThankYou = true;
         this.removeIdFromLocalStorage();
+        this.showSpinner = false;
+
         return;
       }
       console.log(response);
