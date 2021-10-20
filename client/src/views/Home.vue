@@ -269,7 +269,7 @@ export default {
   },
   computed: {
     checkInButtonIsActive() {
-      const regex = /\w{3,} \w{3,}/;
+      const regex = /(\w|[üäöÄÜÖß-]){3,} (\w|[üäöÄÜÖß-]){3,}/;
       if (this.name.match(regex) && this.club) return true;
       return false;
     },
