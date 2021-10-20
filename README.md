@@ -26,6 +26,7 @@ docker-compose -f docker-compose-dev.yml up --force-recreate --build
 - [ ] Connection error warning
 - [x] Error handling
 - [ ] Make it more leightweight
+- [ ] Make the footer sticky
 
 #### Home
 
