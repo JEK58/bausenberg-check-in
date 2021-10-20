@@ -42,6 +42,7 @@
             <td>{{ formatDate(checkIn.checkInDate) }}</td>
             <td>
               <button
+                v-if="false"
                 type="button"
                 class="btn btn-outline-danger btn-sm"
                 @click="deleteCheckIn(checkIn._id)"
