@@ -6,7 +6,6 @@ const express = require("express");
 const logger = require("./config/winston");
 
 // Error handling
-// TODO: is this doing what i want it to do?
 process.on("uncaughtException", (err) => {
   logger.error("There was an uncaught error", err);
   process.exit(1); //mandatory (as per the Node.js docs)
