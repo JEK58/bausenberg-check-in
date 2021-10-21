@@ -1,7 +1,9 @@
 require("dotenv").config();
 
 const express = require("express");
-const bodyParser = require("body-parser");
+
+// Logging with Winston
+const logger = require("./config/winston");
 
 // Error handling
 // TODO: is this doing what i want it to do?
@@ -17,7 +19,7 @@ const http = require("http");
 const server = http.createServer(app);
 
 // Middleware
-app.use(bodyParser.json());
+app.use(express.json({ limit: "5mb" }));
 app.use(cors());
 
 // Rate Limit
@@ -26,9 +28,10 @@ const rateLimit = require("express-rate-limit");
 // see https://expressjs.com/en/guide/behind-proxies.html
 // app.set('trust proxy', 1);
 
+const API_RATE_LIMIT = process.env.API_RATE_LIMIT;
 const limiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 15 minutes
-  max: 2, // limit each IP to 100 requests per windowMs
+  windowMs: API_RATE_LIMIT * 60 * 1000, // x minutes
+  max: 1, // limit each IP to 100 requests per windowMs
   message: "Zu viele Flüge in zu kurzer Zeit!",
 });
 
@@ -44,9 +47,6 @@ app.use("/api/check-out", checkOut);
 const admin = require("./routes/api/admin");
 
 app.use("/api/admin", admin);
-
-// Logging with Winston
-const logger = require("./config/winston");
 
 // DB Setup
 require("./config/mongoose");
