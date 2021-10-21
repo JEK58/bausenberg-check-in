@@ -23,7 +23,7 @@ docker-compose -f docker-compose-dev.yml up --force-recreate --build
 
 - [ ] More beautiful colors and design
 - [x] Spinner after checkin button pressed
-- [ ] Connection error warning
+- [x] Connection error warning
 - [x] Error handling
 - [ ] Make it more leightweight
 - [ ] Make the footer sticky
@@ -33,7 +33,8 @@ docker-compose -f docker-compose-dev.yml up --force-recreate --build
 - [x] Store checkInId in local storage
 - [ ] Add expiration to local storage
 - [ ] Show time left till on API rate limit error
-- [ ] Add ö,ä,ü to regex input validation
+- [x] Show rate limit warning
+- [x] Add ö,ä,ü to regex input validation
 
 #### Admin
 
