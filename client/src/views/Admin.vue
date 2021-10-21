@@ -42,10 +42,9 @@
             <td>{{ formatDate(checkIn.checkInDate) }}</td>
             <td>
               <button
-                v-if="false"
                 type="button"
                 class="btn btn-outline-danger btn-sm"
-                @click="deleteCheckIn(checkIn._id)"
+                @click="showEntryDeleleModal(checkIn._id)"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -100,11 +99,40 @@
       </form>
     </div>
   </div>
+  <!-- Delete Modal -->
+  <div class="modal fade" id="deleteEntryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Eintrag löschen?</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-danger"
+            data-bs-dismiss="modal"
+            @click="deleteCheckIn(entryIdToDelete)"
+          >
+            Löschen
+          </button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+            Abbrechen
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import API from "@/services/API";
 import { format } from "date-fns";
+import { Modal } from "bootstrap";
 
 export default {
   name: "Admin",
@@ -116,7 +144,14 @@ export default {
       loginError: false,
       username: "",
       password: "",
+      entryIdToDelete: null,
+      deleteEntryModal: null,
     };
+  },
+  mounted() {
+    this.deleteEntryModal = new Modal(
+      document.getElementById("deleteEntryModal")
+    );
   },
   methods: {
     async fetchDB() {
@@ -144,11 +179,16 @@ export default {
         const response = await API.deleteCheckIn(checkInId, this.authData);
         if (response.status === 200) this.fetchDB();
       } catch (error) {
+        // TODO: Do something!
         console.log(error);
       }
     },
     async handleLogin() {
       this.fetchDB();
+    },
+    showEntryDeleleModal(id) {
+      this.entryIdToDelete = id;
+      this.deleteEntryModal.show();
     },
   },
   created() {},
