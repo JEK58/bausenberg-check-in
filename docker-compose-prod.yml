@@ -10,6 +10,9 @@ services:
     restart: always
     depends_on:
       - server
+    environment:
+      - VUE_APP_API_RATE_LIMIT=${API_RATE_LIMIT}
+
     labels:
       traefik.enable: true
       traefik.http.routers.bausenberg-check-in.rule: "Host(`${DOMAIN}`)"
@@ -34,6 +37,8 @@ services:
       - DB_CONNECTION=${DB_CONNECTION}
       - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
       - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - API_RATE_LIMIT=${API_RATE_LIMIT}
+
     labels:
       traefik.enable: true
       traefik.http.routers.bausenberg-check-in-ws.rule: "Host(`${DOMAIN}`) && PathPrefix(`/api`)"
@@ -54,10 +59,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
 
     volumes:
-      - db:/data/db
-
-volumes:
-  db:
+      - ./db:/data/db:rw
 
 networks:
   default:

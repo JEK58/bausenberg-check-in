@@ -1,17 +1,24 @@
 version: "3.8"
 
 services:
-  # client:
-  #   build:
-  #     context: ./client
-  #     dockerfile: Dockerfile
-  #   image: bausenberg-check-in-client
-  #   container_name: bausenberg-check-in-client
-  #   environment:
-  #     - NODE_ENV=development
-  #   restart: always
-  #   ports:
-  #     - 8000:80
+  client:
+    image: node:16.2.0-alpine3.13
+    container_name: bausenberg-check-in-client
+    environment:
+      - NODE_ENV=development
+      - VUE_APP_API_RATE_LIMIT=${API_RATE_LIMIT}
+    restart: always
+    working_dir: /bausenberg-check-in/client
+
+    volumes:
+      - ./:/bausenberg-check-in:rw
+
+    entrypoint:
+      - "yarn"
+      - "serve"
+
+    ports:
+      - 8080:8080
 
   server:
     image: node:16.2.0-alpine3.13
@@ -22,6 +29,7 @@ services:
       - DB_CONNECTION=${DB_CONNECTION}
       - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
       - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - API_RATE_LIMIT=${API_RATE_LIMIT}
 
     working_dir: /bausenberg-check-in/server
     volumes:
@@ -40,7 +48,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
 
     volumes:
-      - db:/data/db
+      - ./db:/data/db:rw
 
   # mongo-express:
   #   image: mongo-express
@@ -57,5 +65,3 @@ services:
   #     - db
   #   ports:
   #     - "8888:8081"
-volumes:
-  db:
