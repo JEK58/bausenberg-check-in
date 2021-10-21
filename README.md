@@ -40,7 +40,8 @@ docker-compose -f docker-compose-dev.yml up --force-recreate --build
 
 - [x] Admin Auth
 - [x] Refresh button
-- [ ] Delete entry modal => are you sure?
+- [x] Delete entry modal => are you sure?
+- [ ] Error handling
 - [ ] Export
 
 ### Backend
