@@ -38,7 +38,7 @@
             <label class="btn btn-outline-light" for="btn-dgc">DGC</label>
           </div>
         </div>
-        <div class="mt-3 mb-5">
+        <div class="mt-4 mb-5">
           <div class="my-2 d-grid gap-2">
             <button
               type="button"
@@ -55,8 +55,14 @@
                 <span class="visually-hidden">Loading...</span>
               </div>
             </button>
+            <!-- Errors -->
             <div v-if="showTooManyRequestsWarning" class="mt-4 text-warning">
               Du scheinst zu viele Flüge in zu kurzer Zeit melden zu wollen.
+              Bitte warte noch {{ apiRateLimitCountDown }} Minuten.
+            </div>
+            <div v-if="showConnectionError" class="mt-4 text-warning">
+              Verbindung nicht möglich - vielleicht hast du gerade schlechten
+              Empfang? Im Zweifel versuche es noch mal.
             </div>
           </div>
           <div v-if="showDebug">
@@ -116,11 +122,11 @@
               class="btn-check"
               name="btnradio"
               id="btn-xc-landing"
-              value="Außenlandung"
+              value="Streckenflug"
               v-model="landing"
             />
             <label class="btn btn-outline-light text-start" for="btn-xc-landing"
-              >Außenlandung 🎉</label
+              >Streckenflug 🎉</label
             >
           </div>
         </div>
@@ -175,6 +181,7 @@
 
 <script>
 import API from "@/services/API";
+import { format } from "date-fns";
 
 export default {
   name: "Home",
@@ -189,6 +196,8 @@ export default {
       showDebug: false,
       showTooManyRequestsWarning: false,
       showSpinner: false,
+      showConnectionError: false,
+      apiRateLimitCountDown: process.env.VUE_APP_API_RATE_LIMIT,
     };
   },
   methods: {
@@ -206,12 +215,15 @@ export default {
             response.data.checkInDate
           );
           this.showSpinner = false;
+          this.showConnectionError = false;
 
           return;
         }
       } catch (error) {
         if (!error.response) {
-          return console.log("Connection Error");
+          this.showConnectionError = true;
+          this.showSpinner = false;
+          return;
         }
         if (error.response?.status === 429) {
           this.showTooManyRequestsWarning = true;
@@ -231,11 +243,13 @@ export default {
           this.showThankYou = true;
           this.removeIdFromLocalStorage();
           this.showSpinner = false;
+          this.showConnectionError = false;
           return;
         }
         console.log(response);
       } catch (error) {
         console.log(error);
+        this.showConnectionError = true;
         if (error.response.status === 400) {
           // Escape if there is something wrong with the server.
           // User doesn't care. Dirty but good enough.
@@ -273,8 +287,10 @@ export default {
       this.showThankYou = false;
       this.showTooManyRequestsWarning = false;
       this.showSpinner = false;
+      this.showConnectionError = false;
     },
   },
+
   computed: {
     checkInButtonIsActive() {
       const regex = /(\w|[üäöÄÜÖß-]){3,} (\w|[üäöÄÜÖß-]){3,}/;
