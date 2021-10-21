@@ -5,13 +5,13 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
+      args:
+        API_RATE_LIMIT: ${API_RATE_LIMIT}
     image: bausenberg-check-in-client
     container_name: bausenberg-check-in-client
     restart: always
     depends_on:
       - server
-    environment:
-      - VUE_APP_API_RATE_LIMIT=${API_RATE_LIMIT}
 
     labels:
       traefik.enable: true
