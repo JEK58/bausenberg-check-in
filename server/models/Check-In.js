@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const CheckInSchema = mongoose.Schema({
   checkInDate: {
     type: Number,
-    required: false,
+    required: true,
   },
   checkOutDate: {
     type: Number,
@@ -11,16 +11,18 @@ const CheckInSchema = mongoose.Schema({
   },
   name: {
     type: String,
-    required: false,
+    required: true,
     match: /(\w|[üäöÄÜÖß-]){3,} (\w|[üäöÄÜÖß-]){3,}/,
   },
   club: {
     type: String,
-    required: false,
+    required: true,
+    enum: ["RML", "DGC"],
   },
   landing: {
     type: String,
     required: false,
+    enum: ["Landewiese", "Notlandewiese", "Streckenflug"],
   },
 });
 
