@@ -12,6 +12,7 @@ const CheckInSchema = mongoose.Schema({
   name: {
     type: String,
     required: false,
+    match: /(\w|[üäöÄÜÖß-]){3,} (\w|[üäöÄÜÖß-]){3,}/,
   },
   club: {
     type: String,
