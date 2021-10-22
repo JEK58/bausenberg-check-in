@@ -65,12 +65,6 @@
               Empfang? Im Zweifel versuche es noch mal.
             </div>
           </div>
-          <div v-if="showDebug">
-            <h4>Debug</h4>
-            checkInButtonIsActive: {{ checkInButtonIsActive }} <br />
-            name value:
-            {{ name }}
-          </div>
         </div>
         <h5>Hinweis:</h5>
         <p>
