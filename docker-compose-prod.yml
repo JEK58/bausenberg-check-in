@@ -20,8 +20,6 @@ services:
       traefik.http.routers.bausenberg-check-in.tls.certresolver: myresolver
       traefik.http.routers.bausenberg-check-in.priority: 100
 
-      traefik.docker.network: traefik
-
   server:
     image: node:16.2.0-alpine3.13
     restart: always
@@ -47,7 +45,6 @@ services:
       traefik.http.routers.bausenberg-check-in-ws.priority: 200
       traefik.http.services.bausenberg-check-in-ws.loadbalancer.server.port: 3031
 
-      traefik.docker.network: traefik
     command: ./docker-entrypoint.sh
 
   db:
@@ -85,8 +82,6 @@ services:
       traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: https
       traefik.http.middlewares.redirect-to-https.redirectscheme.permanent: true
 
-    networks:
-      - traefik
     ports:
       - "80:80"
       - "443:443"
@@ -94,8 +89,3 @@ services:
     volumes:
       - "./letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-
-networks:
-  default:
-    external:
-      name: traefik
