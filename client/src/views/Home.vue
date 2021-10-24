@@ -38,11 +38,11 @@
             <label class="btn btn-outline-light" for="btn-dgc">DGC</label>
           </div>
         </div>
-        <div class="mt-4 mb-5">
+        <div class="mt-5 mb-5">
           <div class="my-2 d-grid gap-2">
             <button
               type="button"
-              class="btn btn-danger"
+              class="btn btn-lg btn-danger"
               @click="addCheckIn"
               :disabled="!checkInButtonIsActive"
             >
@@ -76,6 +76,13 @@
           Bei Problemen schicke bitte eine Mail an
           <a href="mailto:bausenberg@thermik4u.de?subject=Bausenberg Check-in"
             >bausenberg@thermik4u.de</a
+          >
+        </p>
+        <p>
+          <strong
+            ><a href="https://www.thermik4u.de/fluggebiete/niederzissen"
+              >Hinweise zum Fluggebiet</a
+            ></strong
           >
         </p>
       </div>
@@ -116,20 +123,34 @@
               class="btn-check"
               name="btnradio"
               id="btn-xc-landing"
+              Doch
+              nicht
+              gestartet
               value="Streckenflug"
               v-model="landing"
             />
             <label class="btn btn-outline-light text-start" for="btn-xc-landing"
               >Streckenflug 🎉</label
             >
+            <input
+              type="radio"
+              class="btn-check"
+              name="btnradio"
+              id="btn-no-takeoff"
+              value="Doch nicht gestartet"
+              v-model="landing"
+            />
+            <label class="btn btn-outline-light text-start" for="btn-no-takeoff"
+              >Doch nicht gestartet 🤷</label
+            >
           </div>
         </div>
 
-        <div class="my-3">
+        <div class="my-5">
           <div class="my-2 d-grid gap-2">
             <button
               type="button"
-              class="btn btn-success"
+              class="btn btn-lg btn-success"
               @click="addCheckOut"
               :disabled="checkoutButtonIsDisabled"
             >
