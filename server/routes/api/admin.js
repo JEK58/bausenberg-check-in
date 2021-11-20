@@ -14,9 +14,43 @@ router.get("/", async (req, res) => {
   try {
     if (!checkAuth(req, res)) return;
 
-    const response = await CheckInModel.find({});
-    res.send(response);
+    const checkIns = await CheckInModel.find({});
+
+    const didNotStart = await CheckInModel.find({
+      landing: "Doch nicht gestartet",
+    }).count();
+    const alternateLanding = await CheckInModel.find({
+      landing: "Notlandewiese",
+    }).count();
+    const regularLanding = await CheckInModel.find({
+      landing: "Landewiese",
+    }).count();
+    const xcLanding = await CheckInModel.find({
+      landing: "Streckenflug",
+    }).count();
+
+    res.send({
+      checkIns,
+      statistics: {
+        didNotStart: didNotStart,
+        regularLanding: regularLanding,
+        alternateLanding,
+        xcLanding,
+      },
+    });
     logger.info("Admin connected");
+  } catch (error) {
+    logger.error(error);
+    res.status(400).json("Error: " + error);
+  }
+});
+
+router.get("/statistics", async (req, res) => {
+  try {
+    if (!checkAuth(req, res)) return;
+
+    res.send();
+    // logger.info("Admin connected");
   } catch (error) {
     logger.error(error);
     res.status(400).json("Error: " + error);
