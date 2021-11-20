@@ -25,7 +25,7 @@
               value="RML"
               v-model="club"
             />
-            <label class="btn btn-outline-primary" for="btn-rml">RML</label>
+            <label class="btn btn-outline-secondary" for="btn-rml">RML</label>
 
             <input
               type="radio"
@@ -35,7 +35,7 @@
               value="DGC"
               v-model="club"
             />
-            <label class="btn btn-outline-primary" for="btn-dgc">DGC</label>
+            <label class="btn btn-outline-secondary" for="btn-dgc">DGC</label>
           </div>
         </div>
         <div class="mt-5 mb-5">
@@ -100,7 +100,7 @@
               v-model="landing"
             />
             <label
-              class="btn btn-outline-light text-start"
+              class="btn btn-outline-secondary text-start"
               for="btn-regular-landing"
               >Landewiese 👌</label
             >
@@ -114,7 +114,7 @@
               v-model="landing"
             />
             <label
-              class="btn btn-outline-light text-start"
+              class="btn btn-outline-secondary text-start"
               for="btn-alternate-landing"
               >Notlandewiese 🧐</label
             >
@@ -129,7 +129,9 @@
               value="Streckenflug"
               v-model="landing"
             />
-            <label class="btn btn-outline-light text-start" for="btn-xc-landing"
+            <label
+              class="btn btn-outline-secondary text-start"
+              for="btn-xc-landing"
               >Streckenflug 🎉</label
             >
             <input
@@ -140,7 +142,9 @@
               value="Doch nicht gestartet"
               v-model="landing"
             />
-            <label class="btn btn-outline-light text-start" for="btn-no-takeoff"
+            <label
+              class="btn btn-outline-secondary text-start"
+              for="btn-no-takeoff"
               >Doch nicht gestartet 🤷</label
             >
           </div>
