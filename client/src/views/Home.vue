@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid bg-dark h-100 pt-4 text-light">
+  <div class="container-fluid h-100 pt-4">
     <div class="col-12 col-sm-10 col-md-8 col-xl-6 mx-auto full-height">
       <!-- Check-in -->
       <div v-if="!checkInId && showThankYou == false">
@@ -25,7 +25,7 @@
               value="RML"
               v-model="club"
             />
-            <label class="btn btn-outline-light" for="btn-rml">RML</label>
+            <label class="btn btn-outline-primary" for="btn-rml">RML</label>
 
             <input
               type="radio"
@@ -35,7 +35,7 @@
               value="DGC"
               v-model="club"
             />
-            <label class="btn btn-outline-light" for="btn-dgc">DGC</label>
+            <label class="btn btn-outline-primary" for="btn-dgc">DGC</label>
           </div>
         </div>
         <div class="mt-5 mb-5">
@@ -331,8 +331,8 @@ body {
 .full-height {
   height: 100vh;
 }
-a {
+/* a {
   text-decoration: none;
   color: steelblue;
-}
+} */
 </style>
