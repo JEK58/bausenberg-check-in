@@ -43,6 +43,8 @@
         </li>
       </ul>
 
+      <p>(Statistiken pro Jahr kommen demnächst)</p>
+
       <h4>Liste</h4>
 
       <table class="table">
@@ -118,31 +120,36 @@
         </div>
       </form>
     </div>
-  </div>
-  <!-- Delete Modal -->
-  <div class="modal fade" id="deleteEntryModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Eintrag löschen?</h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-          ></button>
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-outline-danger"
-            data-bs-dismiss="modal"
-            @click="deleteCheckIn(entryIdToDelete)"
-          >
-            Löschen
-          </button>
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-            Abbrechen
-          </button>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteEntryModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Eintrag löschen?</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              data-bs-dismiss="modal"
+              @click="deleteCheckIn(entryIdToDelete)"
+            >
+              Löschen
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+            >
+              Abbrechen
+            </button>
+          </div>
         </div>
       </div>
     </div>
