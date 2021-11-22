@@ -1,23 +1,23 @@
 version: "3.8"
 
 services:
-  client:
-    image: node:16.2.0-alpine3.13
-    container_name: bausenberg-check-in-client
-    environment:
-      - VITE_API_RATE_LIMIT=${API_RATE_LIMIT}
-    restart: always
-    working_dir: /bausenberg-check-in/client
+  # client:
+  #   image: node:16.2.0-alpine3.13
+  #   container_name: bausenberg-check-in-client
+  #   environment:
+  #     - VITE_API_RATE_LIMIT=${API_RATE_LIMIT}
+  #   restart: always
+  #   working_dir: /bausenberg-check-in/client
 
-    volumes:
-      - ./:/bausenberg-check-in:rw
+  #   volumes:
+  #     - ./:/bausenberg-check-in:rw
 
-    entrypoint:
-      - "yarn"
-      - "dev"
+  #   entrypoint:
+  #     - "yarn"
+  #     - "dev"
 
-    ports:
-      - 8080:8080
+  #   ports:
+  #     - 8080:8080
 
   server:
     image: node:16.2.0-alpine3.13
@@ -46,8 +46,9 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
 
-    volumes:
-      - ./db:/data/db:rw
+    #volumes:
+     # - ./db:/data/db:rw
+     # - db
 
   # mongo-express:
   #   image: mongo-express
