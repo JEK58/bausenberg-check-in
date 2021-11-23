@@ -21,6 +21,7 @@ docker-compose -f docker-compose-dev.yml up --force-recreate --build
 #### Frontend
 
 - [ ] More beautiful colors and design
+- [x] dark mode
 - [x] Spinner after checkin button pressed
 - [x] Connection error warning
 - [x] Error handling
@@ -38,6 +39,7 @@ docker-compose -f docker-compose-dev.yml up --force-recreate --build
 #### Admin
 
 - [x] Admin Auth
+- [ ] Statistics for each year
 - [x] Refresh button
 - [x] Delete entry modal => are you sure?
 - [ ] Error handling
