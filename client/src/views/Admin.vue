@@ -162,7 +162,7 @@ import { format } from "date-fns";
 import { Modal } from "bootstrap";
 
 export default {
-  name: "Admin",
+  name: "AdminView",
   components: {},
   data() {
     return {

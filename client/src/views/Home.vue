@@ -56,11 +56,11 @@
               </div>
             </button>
             <!-- Errors -->
-            <div v-if="showTooManyRequestsWarning" class="mt-4 text-warning">
+            <div v-if="showTooManyRequestsWarning" class="mt-4 text-danger">
               Du scheinst zu viele Flüge in zu kurzer Zeit melden zu wollen.
               Bitte warte noch {{ apiRateLimitCountDown }} Minuten.
             </div>
-            <div v-if="showConnectionError" class="mt-4 text-warning">
+            <div v-if="showConnectionError" class="mt-4 text-danger">
               Verbindung nicht möglich - vielleicht hast du gerade schlechten
               Empfang? Im Zweifel versuche es noch mal.
             </div>
@@ -200,10 +200,9 @@
 
 <script>
 import API from "@/services/API";
-import { format } from "date-fns";
 
 export default {
-  name: "Home",
+  name: "HomeView",
   components: {},
   data() {
     return {
