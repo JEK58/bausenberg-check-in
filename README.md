@@ -14,7 +14,6 @@ docker-compose -f docker-compose-prod.yml up --force-recreate --build
 
 ```
 docker-compose -f docker-compose-dev.yml up --force-recreate --build
-/client: yarn serve
 ```
 
 ### Todo
