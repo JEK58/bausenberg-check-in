@@ -7,9 +7,9 @@
         <div class="row mt-4">
           <div class="col-12">
             <input
+              id="name"
               type="text"
               class="form-control col"
-              id="name"
               placeholder="Voller Name"
               :value="name"
               @input="(evt) => (name = evt.target.value)"
@@ -18,22 +18,22 @@
 
           <div class="btn-group mt-2 col-12" role="group">
             <input
+              id="btn-rml"
+              v-model="club"
               type="radio"
               class="btn-check"
               name="btnradioclub"
-              id="btn-rml"
               value="RML"
-              v-model="club"
             />
             <label class="btn btn-outline-primary" for="btn-rml">RML</label>
 
             <input
+              id="btn-dgc"
+              v-model="club"
               type="radio"
               class="btn-check"
               name="btnradioclub"
-              id="btn-dgc"
               value="DGC"
-              v-model="club"
             />
             <label class="btn btn-outline-primary" for="btn-dgc">DGC</label>
           </div>
@@ -43,8 +43,8 @@
             <button
               type="button"
               class="btn btn-lg btn-danger"
-              @click="addCheckIn"
               :disabled="!checkInButtonIsActive"
+              @click="addCheckIn"
             >
               Check In
               <div
@@ -92,12 +92,12 @@
         <div class="d-grid gap-2">
           <div class="btn-group-vertical btn-group-lg col mt-4" role="group">
             <input
+              id="btn-regular-landing"
+              v-model="landing"
               type="radio"
               class="btn-check"
               name="btnradio"
-              id="btn-regular-landing"
               value="Landewiese"
-              v-model="landing"
             />
             <label
               class="btn btn-outline-primary text-start"
@@ -106,12 +106,12 @@
             >
 
             <input
+              id="btn-alternate-landing"
+              v-model="landing"
               type="radio"
               class="btn-check"
               name="btnradio"
-              id="btn-alternate-landing"
               value="Notlandewiese"
-              v-model="landing"
             />
             <label
               class="btn btn-outline-primary text-start"
@@ -119,15 +119,15 @@
               >Notlandewiese 🧐</label
             >
             <input
+              id="btn-xc-landing"
+              v-model="landing"
               type="radio"
               class="btn-check"
               name="btnradio"
-              id="btn-xc-landing"
               Doch
               nicht
               gestartet
               value="Streckenflug"
-              v-model="landing"
             />
             <label
               class="btn btn-outline-primary text-start"
@@ -135,12 +135,12 @@
               >Streckenflug 🎉</label
             >
             <input
+              id="btn-no-takeoff"
+              v-model="landing"
               type="radio"
               class="btn-check"
               name="btnradio"
-              id="btn-no-takeoff"
               value="Doch nicht gestartet"
-              v-model="landing"
             />
             <label
               class="btn btn-outline-primary text-start"
@@ -155,8 +155,8 @@
             <button
               type="button"
               class="btn btn-lg btn-success"
-              @click="addCheckOut"
               :disabled="checkoutButtonIsDisabled"
+              @click="addCheckOut"
             >
               Check out
               <div
@@ -218,6 +218,20 @@ export default {
       showConnectionError: false,
       apiRateLimitCountDown: import.meta.env.VITE_API_RATE_LIMIT,
     };
+  },
+
+  computed: {
+    checkInButtonIsActive() {
+      const regex = /(\w|[üäöÄÜÖß-]){3,} (\w|[üäöÄÜÖß-]){3,}/;
+      if (this.name.match(regex) && this.club) return true;
+      return false;
+    },
+    checkoutButtonIsDisabled() {
+      return !this.landing;
+    },
+  },
+  created() {
+    this.getIdFromLocalStorage();
   },
   methods: {
     async addCheckIn() {
@@ -308,20 +322,6 @@ export default {
       this.showSpinner = false;
       this.showConnectionError = false;
     },
-  },
-
-  computed: {
-    checkInButtonIsActive() {
-      const regex = /(\w|[üäöÄÜÖß-]){3,} (\w|[üäöÄÜÖß-]){3,}/;
-      if (this.name.match(regex) && this.club) return true;
-      return false;
-    },
-    checkoutButtonIsDisabled() {
-      return !this.landing;
-    },
-  },
-  created() {
-    this.getIdFromLocalStorage();
   },
 };
 </script>

@@ -96,20 +96,20 @@
         <div class="mb-3">
           <label for="username" class="form-label"></label>
           <input
+            id="username"
+            v-model="username"
             type="text"
             class="form-control"
-            id="username"
             placeholder="Username"
-            v-model="username"
           />
 
           <label for="password" class="form-label"></label>
           <input
+            id="password"
+            v-model="password"
             type="password"
             class="form-control"
-            id="password"
             placeholder="Passwort"
-            v-model="password"
           />
         </div>
         <div v-if="loginError">
@@ -122,7 +122,7 @@
     </div>
 
     <!-- Delete Modal -->
-    <div class="modal fade" id="deleteEntryModal" tabindex="-1">
+    <div id="deleteEntryModal" class="modal fade" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
@@ -175,6 +175,14 @@ export default {
       deleteEntryModal: null,
     };
   },
+  computed: {
+    authData() {
+      return {
+        username: this.username,
+        password: this.password,
+      };
+    },
+  },
   mounted() {
     this.deleteEntryModal = new Modal(
       document.getElementById("deleteEntryModal")
@@ -223,14 +231,6 @@ export default {
           v.landing === val ? a + 1 : a, 0;
         })
       );
-    },
-  },
-  computed: {
-    authData() {
-      return {
-        username: this.username,
-        password: this.password,
-      };
     },
   },
 };
