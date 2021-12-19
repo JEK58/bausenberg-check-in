@@ -212,7 +212,7 @@ export default {
       showTooManyRequestsWarning: false,
       showSpinner: false,
       showConnectionError: false,
-      apiRateLimitCountDown: import.meta.env.VITE_API_RATE_LIMIT,
+      apiRateLimitCountDown: process.env.VUE_APP_API_RATE_LIMIT,
     };
   },
   methods: {
