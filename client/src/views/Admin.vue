@@ -1,5 +1,5 @@
 <template>
-  <div class="container h-100 pt-4">
+  <div class="container-fluid h-100 pt-4">
     <h4>Bausenberg Admin Panel</h4>
 
     <!-- Refresh Button -->
@@ -25,26 +25,6 @@
     </div>
 
     <div v-if="loggedIn">
-      <!-- Todo: Sort by years -->
-      <h4>Statistik</h4>
-      <ul>
-        <li>
-          Landewiese: <strong>{{ dbData.statistics.regularLanding }}</strong>
-        </li>
-        <li>
-          Außenlandung:
-          <strong>{{ dbData.statistics.alternateLanding }}</strong>
-        </li>
-        <li>
-          Streckenflug:<strong> {{ dbData.statistics.xcLanding }}</strong>
-        </li>
-        <li>
-          Nicht gestartet: <strong>{{ dbData.statistics.didNotStart }}</strong>
-        </li>
-      </ul>
-
-      <h4>Liste</h4>
-
       <table class="table">
         <thead>
           <tr>
@@ -55,7 +35,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="checkIn in dbData.checkIns" :key="checkIn._id">
+          <tr v-for="checkIn in checkIns" :key="checkIn._id">
             <td>{{ checkIn.name }}</td>
             <td>{{ checkIn.club }}</td>
             <td>{{ checkIn.landing }}</td>
@@ -159,7 +139,7 @@ export default {
   components: {},
   data() {
     return {
-      dbData: [],
+      checkIns: [],
       loggedIn: false,
       loginError: false,
       username: "",
@@ -178,7 +158,7 @@ export default {
       try {
         const response = await API.fetchDB(this.authData);
         if (response.status === 200) {
-          this.dbData = response.data;
+          this.checkIns = response.data;
           this.loggedIn = true;
           this.loginError = false;
         } else {
@@ -210,14 +190,8 @@ export default {
       this.entryIdToDelete = id;
       this.deleteEntryModal.show();
     },
-    countOccurrences(arr, val) {
-      console.log(
-        arr.reduce((a, v) => {
-          v.landing === val ? a + 1 : a, 0;
-        })
-      );
-    },
   },
+  created() {},
   computed: {
     authData() {
       return {
