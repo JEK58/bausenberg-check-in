@@ -1,71 +1,55 @@
 <template>
-  <div class="container-fluid h-100 pt-4">
-    <div class="col-12 col-sm-10 col-md-8 col-xl-6 mx-auto full-height">
-      <!-- Check-in -->
-      <div v-if="!checkInId && showThankYou == false">
-        <h4>Bausenberg Check-in</h4>
-        <div class="row mt-4">
-          <div class="col-12">
-            <input
-              id="name"
-              type="text"
-              class="form-control col"
-              placeholder="Voller Name"
-              :value="name"
-              @input="(evt) => (name = evt.target.value)"
-            />
-          </div>
+  <main class="container">
+    <!-- Check-in -->
+    <div v-if="!checkInId && showThankYou == false">
+      <h4>Bausenberg Check-in</h4>
+      <section>
+        <input
+          id="name"
+          type="text"
+          placeholder="Voller Name"
+          :value="name"
+          @input="(evt) => (name = evt.target.value)"
+        />
 
-          <div class="btn-group mt-2 col-12" role="group">
-            <input
-              id="btn-rml"
-              v-model="club"
-              type="radio"
-              class="btn-check"
-              name="btnradioclub"
-              value="RML"
-            />
-            <label class="btn btn-outline-primary" for="btn-rml">RML</label>
+        <input
+          id="btn-rml"
+          v-model="club"
+          type="radio"
+          name="btnradioclub"
+          value="RML"
+        />
+        <label class="" for="btn-rml">RML</label>
 
-            <input
-              id="btn-dgc"
-              v-model="club"
-              type="radio"
-              class="btn-check"
-              name="btnradioclub"
-              value="DGC"
-            />
-            <label class="btn btn-outline-primary" for="btn-dgc">DGC</label>
-          </div>
+        <input
+          id="btn-dgc"
+          v-model="club"
+          type="radio"
+          class=""
+          name="btnradioclub"
+          value="DGC"
+        />
+        <label class="" for="btn-dgc">DGC</label>
+      </section>
+      <section>
+        <button
+          :disabled="!checkInButtonIsActive"
+          :aria-busy="showSpinner"
+          @click="addCheckIn"
+        >
+          Check In
+        </button>
+        <!-- Errors -->
+        <div v-if="showTooManyRequestsWarning" class="">
+          Du scheinst zu viele Flüge in zu kurzer Zeit melden zu wollen. Bitte
+          warte noch {{ apiRateLimitCountDown }} Minuten.
         </div>
-        <div class="mt-5 mb-5">
-          <div class="my-2 d-grid gap-2">
-            <button
-              type="button"
-              class="btn btn-lg btn-danger"
-              :disabled="!checkInButtonIsActive"
-              @click="addCheckIn"
-            >
-              Check In
-              <div
-                v-if="showSpinner"
-                class="spinner-border spinner-border-sm"
-                role="status"
-              >
-                <span class="visually-hidden">Loading...</span>
-              </div>
-            </button>
-            <!-- Errors -->
-            <div v-if="showTooManyRequestsWarning" class="mt-4 text-danger">
-              Du scheinst zu viele Flüge in zu kurzer Zeit melden zu wollen.
-              Bitte warte noch {{ apiRateLimitCountDown }} Minuten.
-            </div>
-            <div v-if="showConnectionError" class="mt-4 text-danger">
-              Verbindung nicht möglich - vielleicht hast du gerade schlechten
-              Empfang? Im Zweifel versuche es noch mal.
-            </div>
-          </div>
+        <div v-if="showConnectionError" class="">
+          Verbindung nicht möglich - vielleicht hast du gerade schlechten
+          Empfang? Im Zweifel versuche es noch mal.
         </div>
+      </section>
+      <section>
         <h5>Hinweis:</h5>
         <p>
           Nach dem Flug bitte wieder auschecken und die genutzte Landewiese
@@ -85,117 +69,87 @@
             ></strong
           >
         </p>
-      </div>
-      <!-- Checkout -->
-      <div v-if="checkInId && showThankYou == false">
-        <h4>Bausenberg Check-out</h4>
-        <div class="d-grid gap-2">
-          <div class="btn-group-vertical btn-group-lg col mt-4" role="group">
-            <input
-              id="btn-regular-landing"
-              v-model="landing"
-              type="radio"
-              class="btn-check"
-              name="btnradio"
-              value="Landewiese"
-            />
-            <label
-              class="btn btn-outline-primary text-start"
-              for="btn-regular-landing"
-              >Landewiese 👌</label
-            >
-
-            <input
-              id="btn-alternate-landing"
-              v-model="landing"
-              type="radio"
-              class="btn-check"
-              name="btnradio"
-              value="Notlandewiese"
-            />
-            <label
-              class="btn btn-outline-primary text-start"
-              for="btn-alternate-landing"
-              >Notlandewiese 🧐</label
-            >
-            <input
-              id="btn-xc-landing"
-              v-model="landing"
-              type="radio"
-              class="btn-check"
-              name="btnradio"
-              Doch
-              nicht
-              gestartet
-              value="Streckenflug"
-            />
-            <label
-              class="btn btn-outline-primary text-start"
-              for="btn-xc-landing"
-              >Streckenflug 🎉</label
-            >
-            <input
-              id="btn-no-takeoff"
-              v-model="landing"
-              type="radio"
-              class="btn-check"
-              name="btnradio"
-              value="Doch nicht gestartet"
-            />
-            <label
-              class="btn btn-outline-primary text-start"
-              for="btn-no-takeoff"
-              >Doch nicht gestartet 🤷</label
-            >
-          </div>
-        </div>
-
-        <div class="my-5">
-          <div class="my-2 d-grid gap-2">
-            <button
-              type="button"
-              class="btn btn-lg btn-success"
-              :disabled="checkoutButtonIsDisabled"
-              @click="addCheckOut"
-            >
-              Check out
-              <div
-                v-if="showSpinner"
-                class="spinner-border spinner-border-sm"
-                role="status"
-              >
-                <span class="visually-hidden">Loading...</span>
-              </div>
-            </button>
-          </div>
-        </div>
-      </div>
-      <!-- Finish -->
-      <div v-if="showThankYou">
-        <h4>Danke!</h4>
-        <div class="my-3">
-          <p>
-            Du kannst das Fenster nun schließen oder einen weiteren Flug
-            eintragen.
-          </p>
-
-          <div class="my-2 d-grid gap-2">
-            <button type="button" class="btn btn-success" @click="resetApp">
-              Neuer Flugbucheintrag
-            </button>
-          </div>
-        </div>
-      </div>
-      <!-- Footer -->
-      <footer class="mt-5">
-        <p>
-          <a href="https://www.thermik4u.de/index.php/impressum">Datenschutz</a>
-          ·
-          <a href="https://www.thermik4u.de/index.php/disclaimer">Impressum</a>
-        </p>
-      </footer>
+      </section>
     </div>
-  </div>
+    <!-- Checkout -->
+    <div v-if="checkInId && showThankYou == false">
+      <h4>Bausenberg Check-out</h4>
+      <fieldset>
+        <label for="btn-regular-landing">
+          <input
+            id="btn-regular-landing"
+            v-model="landing"
+            type="radio"
+            name="btnradio"
+            value="Landewiese"
+          />
+          Landewiese 👌
+        </label>
+
+        <label for="btn-alternate-landing">
+          <input
+            id="btn-alternate-landing"
+            v-model="landing"
+            type="radio"
+            name="btnradio"
+            value="Notlandewiese"
+          />
+          Notlandewiese 🧐
+        </label>
+
+        <label for="btn-xc-landing">
+          <input
+            id="btn-xc-landing"
+            v-model="landing"
+            type="radio"
+            name="btnradio"
+            value="Streckenflug"
+          />
+          Streckenflug 🎉
+        </label>
+
+        <label for="btn-no-takeoff">
+          <input
+            id="btn-no-takeoff"
+            v-model="landing"
+            type="radio"
+            name="btnradio"
+            value="Doch nicht gestartet"
+          />
+          Doch nicht gestartet 🤷
+        </label>
+      </fieldset>
+
+      <button
+        :disabled="checkoutButtonIsDisabled"
+        :aria-busy="showSpinner"
+        @click="addCheckOut"
+      >
+        Check out
+      </button>
+    </div>
+
+    <!-- Finish -->
+    <div v-if="showThankYou">
+      <section>
+        <h4>Danke!</h4>
+        <p>
+          Du kannst das Fenster nun schließen oder einen weiteren Flug
+          eintragen.
+        </p>
+
+        <button @click="resetApp">Neuer Flugbucheintrag</button>
+      </section>
+    </div>
+    <!-- Footer -->
+    <footer>
+      <p>
+        <a href="https://www.thermik4u.de/index.php/impressum">Datenschutz</a>
+        ·
+        <a href="https://www.thermik4u.de/index.php/disclaimer">Impressum</a>
+      </p>
+    </footer>
+  </main>
 </template>
 
 <script>
@@ -326,16 +280,7 @@ export default {
 </script>
 
 <style scoped>
-html,
-body {
-  height: 100vh;
-}
-
 .full-height {
   height: 100vh;
 }
-/* a {
-  text-decoration: none;
-  color: steelblue;
-} */
 </style>
