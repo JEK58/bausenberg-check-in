@@ -22,7 +22,7 @@ app.use(express.json({ limit: "5mb" }));
 app.use(cors());
 
 // Rate Limit
-const rateLimit = require("express-rate-limit");
+const rateLimit = require("express-rate-limit").default;
 // Enable if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 // see https://expressjs.com/en/guide/behind-proxies.html
 // app.set('trust proxy', 1);
