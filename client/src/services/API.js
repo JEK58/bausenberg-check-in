@@ -24,7 +24,7 @@ export default {
       auth: auth,
     });
   },
-  deleteCheckIn(checkInId, auth) {
+  deleteEntry(checkInId, auth) {
     return apiClient.delete("admin/" + checkInId, {
       auth: auth,
     });

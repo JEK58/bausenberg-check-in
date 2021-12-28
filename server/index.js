@@ -33,8 +33,15 @@ const limiter = rateLimit({
   max: 1, // limit each IP to 100 requests per windowMs
   message: "Zu viele Flüge in zu kurzer Zeit!",
 });
-
 app.use("/api/check-in", limiter);
+
+const adminLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // x minutes
+  max: 10, // limit each IP to 100 requests per windowMs
+  message: "Zu viele Anfragen",
+});
+
+app.use("/api/admin", adminLimiter);
 
 // Routes
 const checkIn = require("./routes/api/check-in");

@@ -5,17 +5,18 @@
       <h4>Statistik</h4>
       <ul>
         <li>
-          Landewiese: <strong>{{ dbData.statistics?.regularLanding }}</strong>
+          Landewiese: <strong>{{ dbData?.statistics?.regularLanding }}</strong>
         </li>
         <li>
           Außenlandung:
-          <strong>{{ dbData.statistics?.alternateLanding }}</strong>
+          <strong>{{ dbData?.statistics?.alternateLanding }}</strong>
         </li>
         <li>
-          Streckenflug:<strong> {{ dbData.statistics?.xcLanding }}</strong>
+          Streckenflug:<strong> {{ dbData?.statistics?.xcLanding }}</strong>
         </li>
         <li>
-          Nicht gestartet: <strong>{{ dbData.statistics?.didNotStart }}</strong>
+          Nicht gestartet:
+          <strong>{{ dbData?.statistics?.didNotStart }}</strong>
         </li>
       </ul>
 
@@ -53,18 +54,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="checkIn in dbData.checkIns" :key="checkIn._id">
+          <tr v-for="checkIn in dbData?.checkIns" :key="checkIn._id">
             <td>{{ checkIn.name }}</td>
             <td>{{ checkIn.club }}</td>
             <td>{{ checkIn.landing }}</td>
             <td>{{ formatDate(checkIn.checkInDate) }}</td>
             <td>
-              <a
-                href="#"
-                role="button"
-                class="outline"
-                @click="showEntryDeleleModal(checkIn)"
-              >
+              <a href="#" @click="onDeleteEntry(checkIn)">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="14"
@@ -87,53 +83,47 @@
         </tbody>
       </table>
     </div>
+    <div v-else></div>
     <!-- Login -->
-    <div v-else>
-      <main class="container">
-        <article>
-          <h4>Bausenberg Admin Panel</h4>
+    <div v-if="!loggedIn">
+      <article>
+        <h4>Bausenberg Admin Panel</h4>
 
-          <form class="" @submit.prevent="handleLogin">
-            <div class="">
-              <label for="username" class="form-label"></label>
-              <input
-                id="username"
-                v-model="username"
-                type="text"
-                class="form-control"
-                placeholder="Username"
-              />
+        <form class="" @submit.prevent="handleLogin">
+          <div class="">
+            <label for="username" class="form-label"></label>
+            <input
+              id="username"
+              v-model="username"
+              type="text"
+              class="form-control"
+              placeholder="Username"
+            />
 
-              <label for="password" class="form-label"></label>
-              <input
-                id="password"
-                v-model="password"
-                type="password"
-                class="form-control"
-                placeholder="Passwort"
-              />
-            </div>
-            <div v-if="loginError">
-              <p class="">Username oder Passwort falsch</p>
-            </div>
-            <div class="">
-              <button type="submit">Login</button>
-            </div>
-          </form>
-        </article>
-      </main>
-      <!-- ./ Main -->
+            <label for="password" class="form-label"></label>
+            <input
+              id="password"
+              v-model="password"
+              type="password"
+              class="form-control"
+              placeholder="Passwort"
+            />
+          </div>
+          <p v-if="loginError" style="color: red">{{ loginError }}</p>
+          <button type="submit">Login</button>
+        </form>
+      </article>
     </div>
 
     <!-- Delete Modal -->
     <dialog id="deleteEntryModal">
       <article>
         <a
-          href="#"
+          href="#close"
           aria-label="Close"
           class="close"
           data-target="deleteEntryModal"
-          @click="closeModal()"
+          @click="toggleModal()"
         >
         </a>
         <h4>Eintrag löschen?</h4>
@@ -146,14 +136,14 @@
             role="button"
             class="secondary"
             data-target="deleteEntryModal"
-            @click="closeModal()"
-            >Abbrechen</a
-          >
+            @click="toggleModal()"
+            >Abbrechen
+          </a>
           <a
             href="#"
             role="button"
             data-target="deleteEntryModal"
-            @click="deleteCheckIn()"
+            @click="deleteEntry()"
           >
             Löschen
           </a>
@@ -166,15 +156,16 @@
 <script setup>
 import API from "@/services/API";
 import { format } from "date-fns";
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.css";
 
-const dbData = ref([]);
-const loggedIn = ref(true);
+const dbData = ref(null);
+const loggedIn = ref(false);
 const loginError = ref(false);
-const username = ref("admin");
-const password = ref("lists-foreman-utilize-AMALGAM");
+const username = ref("");
+const password = ref("");
 const entryToDelete = ref(null);
-let modal = null;
 
 const authData = computed(() => {
   return {
@@ -182,57 +173,103 @@ const authData = computed(() => {
     password: password.value,
   };
 });
-onMounted(() => {
-  modal = document.getElementById("deleteEntryModal");
-});
 
+// Login
+const handleLogin = async () => {
+  try {
+    const response = await API.fetchDB(authData.value);
+    dbData.value = response.data;
+    loggedIn.value = true;
+    loginError.value = false;
+  } catch (error) {
+    loggedIn.value = false;
+    if (error.response?.status === 429) {
+      loginError.value = "Zu viele Anmeldeversuche, warte bitte eine Minute";
+      return;
+    }
+    if (error.response?.status === 401) {
+      loginError.value = "Username oder Passwort falsch";
+      return;
+    }
+    indicateError();
+  }
+};
+
+// DB fetch
 const fetchDB = async () => {
   try {
     const response = await API.fetchDB(authData.value);
-    if (response.status === 200) {
-      dbData.value = response.data;
-      loggedIn.value = true;
-      loginError.value = false;
-    } else {
-      loggedIn.value = false;
-      loginError.value = true;
-    }
+    dbData.value = response.data;
   } catch (error) {
+    indicateError();
     console.log(error);
-    loginError.value = true;
   }
 };
-const formatDate = (timestamp) => {
-  if (!timestamp) return "-";
-  return format(new Date(timestamp), "dd.MM.yyyy - HH:mm");
+
+// Notifications
+const successToast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
+
+const indicateSuccess = () => {
+  successToast.fire({
+    icon: "success",
+    title: "Eintrag gelöscht",
+  });
 };
-const deleteCheckIn = async () => {
+
+const errorToast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
+
+const indicateError = () => {
+  errorToast.fire({
+    icon: "error",
+    title: "Da ist leider was schief gelaufen",
+  });
+};
+
+// Delete Checkin
+const onDeleteEntry = (entry) => {
+  entryToDelete.value = entry;
+  toggleModal();
+};
+
+const deleteEntry = async () => {
   try {
-    const response = await API.deleteCheckIn(
+    const response = await API.deleteEntry(
       entryToDelete.value._id,
       authData.value
     );
-    if (response.status === 200) fetchDB();
-    closeModal(modal);
+    if (response.status === 200) await fetchDB();
+    toggleModal();
+    indicateSuccess();
   } catch (error) {
-    // TODO: Do something!
+    toggleModal();
+    indicateError();
     console.log(error);
   }
 };
-const handleLogin = async () => {
-  fetchDB();
+// Format date
+const formatDate = (timestamp) => {
+  if (!timestamp) return "-";
+  return format(new Date(timestamp), "dd.MM.yy - HH:mm");
 };
-const showEntryDeleleModal = (entry) => {
-  entryToDelete.value = entry;
-  openModal(modal);
-};
-// const countOccurrences = (arr, val) => {
-//   console.log(
-//     arr.reduce((a, v) => {
-//       v.landing === val ? a + 1 : a, 0;
-//     })
-//   );
-// };
+
+/*
+ * Modal
+ *
+ * Pico.css - https://picocss.com
+ * Copyright 2019-2021 - Licensed under MIT
+ */
 
 // Config
 const isOpenClass = "modal-is-open";
@@ -242,19 +279,20 @@ const animationDuration = 400; // ms
 let visibleModal = null;
 
 // Toggle modal
-// const toggleModal = (event) => {
-//   event.preventDefault();
-//   typeof modal != "undefined" && modal != null && isModalOpen(modal)
-//     ? closeModal(modal)
-//     : openModal(modal);
-// };
+const toggleModal = () => {
+  // event.preventDefault();
+  const modal = document.getElementById("deleteEntryModal");
+  typeof modal != "undefined" && modal != null && isModalOpen(modal)
+    ? closeModal(modal)
+    : openModal(modal);
+};
 
 // Is modal open
-// const isModalOpen = (modal) => {
-//   return modal.hasAttribute("open") && modal.getAttribute("open") != "false"
-//     ? true
-//     : false;
-// };
+const isModalOpen = (modal) => {
+  return modal.hasAttribute("open") && modal.getAttribute("open") != "false"
+    ? true
+    : false;
+};
 
 // Open modal
 const openModal = (modal) => {
@@ -273,7 +311,7 @@ const openModal = (modal) => {
 };
 
 // Close modal
-const closeModal = () => {
+const closeModal = (modal) => {
   visibleModal = null;
   document.documentElement.classList.add(closingClass);
   setTimeout(() => {
@@ -326,11 +364,4 @@ const isScrollbarVisible = () => {
   return document.body.scrollHeight > screen.height;
 };
 </script>
-<style scoped>
-.login-prompt {
-  max-width: 500px;
-}
-ul {
-  list-style-type: none;
-}
-</style>
+<style scoped></style>
