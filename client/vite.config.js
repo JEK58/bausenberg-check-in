@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
+import { visualizer } from "rollup-plugin-visualizer";
 
 // https://vueschool.io/articles/vuejs-tutorials/import-aliases-in-vite/
 const path = require("path");
@@ -15,6 +16,11 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+    },
+  },
+  build: {
+    rollupOptions: {
+      plugins: [visualizer()],
     },
   },
 });
