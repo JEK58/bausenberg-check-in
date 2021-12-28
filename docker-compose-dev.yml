@@ -39,7 +39,7 @@ services:
       - 3031:3031
 
   db:
-    image: mongo
+    image: mongo:4.4.10
     restart: always
     container_name: bausenberg-check-in-db
     environment:
