@@ -18,16 +18,16 @@ router.get("/", async (req, res) => {
 
     const didNotStart = await CheckInModel.find({
       landing: "Doch nicht gestartet",
-    }).count();
+    }).countDocuments();
     const alternateLanding = await CheckInModel.find({
       landing: "Notlandewiese",
-    }).count();
+    }).countDocuments();
     const regularLanding = await CheckInModel.find({
       landing: "Landewiese",
-    }).count();
+    }).countDocuments();
     const xcLanding = await CheckInModel.find({
       landing: "Streckenflug",
-    }).count();
+    }).countDocuments();
 
     res.send({
       checkIns,
