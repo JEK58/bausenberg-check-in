@@ -2,7 +2,8 @@
   <main class="container">
     <!-- Check-in -->
     <div v-if="!checkInId && showThankYou == false">
-      <h4>Bausenberg Check-in</h4>
+      <h3>Bausenberg Check-in</h3>
+
       <section>
         <input
           id="name"
@@ -40,11 +41,11 @@
           Check In
         </button>
         <!-- Errors -->
-        <div v-if="showTooManyRequestsWarning" class="">
+        <div v-if="showTooManyRequestsWarning" class="warning">
           Du scheinst zu viele Flüge in zu kurzer Zeit melden zu wollen. Bitte
           warte noch {{ apiRateLimitCountDown }} Minuten.
         </div>
-        <div v-if="showConnectionError" class="">
+        <div v-if="showConnectionError" class="warning">
           Verbindung nicht möglich - vielleicht hast du gerade schlechten
           Empfang? Im Zweifel versuche es noch mal.
         </div>
@@ -58,22 +59,25 @@
         </p>
         <p>
           Bei Problemen schicke bitte eine Mail an
-          <a href="mailto:bausenberg@thermik4u.de?subject=Bausenberg Check-in"
-            >bausenberg@thermik4u.de</a
-          >
+          <a href="mailto:bausenberg@thermik4u.de?subject=Bausenberg Check-in">
+            bausenberg@thermik4u.de
+          </a>
         </p>
         <p>
           <strong
-            ><a href="https://www.thermik4u.de/fluggebiete/niederzissen"
-              >Hinweise zum Fluggebiet</a
-            ></strong
-          >
+            ><a
+              href="https://www.thermik4u.de/fluggebiete/niederzissen"
+              target="_blank"
+            >
+              Hinweise zum Fluggebiet
+            </a>
+          </strong>
         </p>
       </section>
     </div>
     <!-- Checkout -->
     <div v-if="checkInId && showThankYou == false">
-      <h4>Bausenberg Check-out</h4>
+      <h3>Bausenberg Check-out</h3>
       <fieldset>
         <label for="btn-regular-landing">
           <input
@@ -127,6 +131,10 @@
       >
         Check out
       </button>
+      <div v-if="showConnectionError" class="warning">
+        Verbindung nicht möglich - vielleicht hast du gerade schlechten Empfang?
+        Im Zweifel versuche es noch mal.
+      </div>
     </div>
 
     <!-- Finish -->
@@ -141,146 +149,146 @@
         <button @click="resetApp">Neuer Flugbucheintrag</button>
       </section>
     </div>
-    <!-- Footer -->
-    <footer>
-      <p>
-        <a href="https://www.thermik4u.de/index.php/impressum">Datenschutz</a>
-        ·
-        <a href="https://www.thermik4u.de/index.php/disclaimer">Impressum</a>
-      </p>
-    </footer>
   </main>
+  <!-- Footer -->
+  <footer class="container">
+    <p>
+      <a href="https://www.thermik4u.de/index.php/impressum" target="_blank"
+        >Impressum</a
+      >
+      ·
+      <a href="https://www.thermik4u.de/index.php/disclaimer" target="_blank"
+        >Datenschutz</a
+      >
+    </p>
+  </footer>
 </template>
 
-<script>
+<script setup>
 import API from "@/services/API";
+import { ref, computed, onBeforeMount } from "vue";
 
-export default {
-  name: "HomeView",
-  components: {},
-  data() {
-    return {
-      name: "",
-      club: null,
-      landing: null,
-      checkInId: null,
-      showThankYou: false,
-      showDebug: false,
-      showTooManyRequestsWarning: false,
-      showSpinner: false,
-      showConnectionError: false,
-      apiRateLimitCountDown: import.meta.env.VITE_API_RATE_LIMIT,
-    };
-  },
+const name = ref("");
+const club = ref(null);
+const landing = ref(null);
+const checkInId = ref(null);
+const showThankYou = ref(false);
+const showTooManyRequestsWarning = ref(false);
+const showSpinner = ref(false);
+const showConnectionError = ref(false);
 
-  computed: {
-    checkInButtonIsActive() {
-      const regex = /(\w|[üäöÄÜÖß-]){3,} (\w|[üäöÄÜÖß-]){3,}/;
-      if (this.name.match(regex) && this.club) return true;
-      return false;
-    },
-    checkoutButtonIsDisabled() {
-      return !this.landing;
-    },
-  },
-  created() {
-    this.getIdFromLocalStorage();
-  },
-  methods: {
-    async addCheckIn() {
-      try {
-        this.showSpinner = true;
-        const response = await API.addCheckIn({
-          name: this.name,
-          club: this.club,
-        });
-        if (response.status === 201) {
-          this.checkInId = response.data._id;
-          this.saveIdToLocalStorage(
-            response.data._id,
-            response.data.checkInDate
-          );
-          this.showSpinner = false;
-          this.showConnectionError = false;
+const apiRateLimitCountDown = import.meta.env.VITE_API_RATE_LIMIT;
 
-          return;
-        }
-      } catch (error) {
-        if (!error.response) {
-          this.showConnectionError = true;
-          this.showSpinner = false;
-          return;
-        }
-        if (error.response?.status === 429) {
-          this.showTooManyRequestsWarning = true;
-          this.showSpinner = false;
-          return;
-        }
-      }
-    },
-    async addCheckOut() {
-      try {
-        this.showSpinner = true;
+const checkInButtonIsActive = computed(() => {
+  const regex = /(\w|[üäöÄÜÖß-]){3,} (\w|[üäöÄÜÖß-]){3,}/;
+  if (name.value.match(regex) && club.value) return true;
+  return false;
+});
+const checkoutButtonIsDisabled = computed(() => {
+  return !landing.value;
+});
 
-        const response = await API.addCheckOut(this.checkInId, {
-          landing: this.landing,
-        });
-        if (response.status === 201) {
-          this.showThankYou = true;
-          this.removeIdFromLocalStorage();
-          this.showSpinner = false;
-          this.showConnectionError = false;
-          return;
-        }
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-        this.showConnectionError = true;
-        if (error.response.status === 400) {
-          // Escape if there is something wrong with the server.
-          // User doesn't care. Dirty but good enough.
-          this.showThankYou = true;
-          this.removeIdFromLocalStorage();
-          this.showSpinner = false;
+onBeforeMount(() => getIdFromLocalStorage());
 
-          return;
-        }
-      }
-    },
-    saveIdToLocalStorage(id, checkInDate) {
-      localStorage.setItem(
-        "check-in-id",
-        JSON.stringify({
-          id: id,
-          date: checkInDate,
-        })
-      );
-    },
-    getIdFromLocalStorage() {
-      if (localStorage.getItem("check-in-id") === null) return;
+const addCheckIn = async () => {
+  try {
+    showSpinner.value = true;
+    const response = await API.addCheckIn({
+      name: name.value,
+      club: club.value,
+    });
+    if (response.status === 201) {
+      checkInId.value = response.data._id;
+      saveIdToLocalStorage(response.data._id, response.data.checkInDate);
+      showSpinner.value = false;
+      showConnectionError.value = false;
 
-      const { id } = JSON.parse(localStorage.getItem("check-in-id"));
-      this.checkInId = id;
-    },
+      return;
+    }
+  } catch (error) {
+    if (!error.response) {
+      showConnectionError.value = true;
+      showSpinner.value = false;
+      return;
+    }
+    if (error.response?.status === 429) {
+      showTooManyRequestsWarning.value = true;
+      showSpinner.value = false;
+      return;
+    }
+  }
+};
 
-    removeIdFromLocalStorage() {
-      localStorage.removeItem("check-in-id");
-    },
+const addCheckOut = async () => {
+  try {
+    showSpinner.value = true;
 
-    resetApp() {
-      this.checkInId = null;
-      this.landing = null;
-      this.showThankYou = false;
-      this.showTooManyRequestsWarning = false;
-      this.showSpinner = false;
-      this.showConnectionError = false;
-    },
-  },
+    const response = await API.addCheckOut(checkInId.value, {
+      landing: landing.value,
+    });
+    if (response.status === 201) {
+      showThankYou.value = true;
+      removeIdFromLocalStorage();
+      showSpinner.value = false;
+      showConnectionError.value = false;
+      return;
+    }
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+    showConnectionError.value = true;
+    if (error?.response?.status === 400) {
+      // Escape if there is something wrong with the server.
+      // User doesn't care. Dirty but good enough.
+      showThankYou.value = true;
+      removeIdFromLocalStorage();
+      showSpinner.value = false;
+
+      return;
+    }
+    if (!error.response) {
+      showConnectionError.value = true;
+      showSpinner.value = false;
+      return;
+    }
+  }
+};
+const saveIdToLocalStorage = (id, checkInDate) => {
+  localStorage.setItem(
+    "check-in-id",
+    JSON.stringify({
+      id: id,
+      date: checkInDate,
+    })
+  );
+};
+const getIdFromLocalStorage = () => {
+  if (localStorage.getItem("check-in-id") === null) return;
+
+  const { id } = JSON.parse(localStorage.getItem("check-in-id"));
+  checkInId.value = id;
+};
+
+const removeIdFromLocalStorage = () => {
+  localStorage.removeItem("check-in-id");
+};
+
+const resetApp = () => {
+  checkInId.value = null;
+  landing.value = null;
+  showThankYou.value = false;
+  showTooManyRequestsWarning.value = false;
+  showSpinner.value = false;
+  showConnectionError.value = false;
 };
 </script>
 
 <style scoped>
-.full-height {
-  height: 100vh;
+main {
+  min-height: calc(100vh - 3rem);
+  padding-top: 1rem;
+}
+.warning {
+  color: red;
 }
 </style>

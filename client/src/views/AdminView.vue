@@ -60,7 +60,7 @@
             <td>{{ checkIn.landing }}</td>
             <td>{{ formatDate(checkIn.checkInDate) }}</td>
             <td>
-              <a href="#" @click="onDeleteEntry(checkIn)">
+              <a href="#" class="warning" @click="onDeleteEntry(checkIn)">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="14"
@@ -109,7 +109,7 @@
               placeholder="Passwort"
             />
           </div>
-          <p v-if="loginError" style="color: red">{{ loginError }}</p>
+          <p v-if="loginError" class="warning">{{ loginError }}</p>
           <button type="submit">Login</button>
         </form>
       </article>
@@ -364,4 +364,11 @@ const isScrollbarVisible = () => {
   return document.body.scrollHeight > screen.height;
 };
 </script>
-<style scoped></style>
+<style scoped>
+main {
+  padding-top: 1rem;
+}
+.warning {
+  color: red;
+}
+</style>
