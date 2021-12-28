@@ -1,23 +1,21 @@
 <template>
   <main class="container">
-    <h4>Bausenberg Admin Panel</h4>
-
     <div v-if="loggedIn">
       <!-- Todo: Sort by years -->
       <h4>Statistik</h4>
       <ul>
         <li>
-          Landewiese: <strong>{{ dbData.statistics.regularLanding }}</strong>
+          Landewiese: <strong>{{ dbData.statistics?.regularLanding }}</strong>
         </li>
         <li>
           Außenlandung:
-          <strong>{{ dbData.statistics.alternateLanding }}</strong>
+          <strong>{{ dbData.statistics?.alternateLanding }}</strong>
         </li>
         <li>
-          Streckenflug:<strong> {{ dbData.statistics.xcLanding }}</strong>
+          Streckenflug:<strong> {{ dbData.statistics?.xcLanding }}</strong>
         </li>
         <li>
-          Nicht gestartet: <strong>{{ dbData.statistics.didNotStart }}</strong>
+          Nicht gestartet: <strong>{{ dbData.statistics?.didNotStart }}</strong>
         </li>
       </ul>
 
@@ -91,33 +89,40 @@
     </div>
     <!-- Login -->
     <div v-else>
-      <form class="" @submit.prevent="handleLogin">
-        <div class="">
-          <label for="username" class="form-label"></label>
-          <input
-            id="username"
-            v-model="username"
-            type="text"
-            class="form-control"
-            placeholder="Username"
-          />
+      <main class="container">
+        <article>
+          <h4>Bausenberg Admin Panel</h4>
 
-          <label for="password" class="form-label"></label>
-          <input
-            id="password"
-            v-model="password"
-            type="password"
-            class="form-control"
-            placeholder="Passwort"
-          />
-        </div>
-        <div v-if="loginError">
-          <p class="">Username oder Passwort falsch</p>
-        </div>
-        <div class="">
-          <button type="submit">Login</button>
-        </div>
-      </form>
+          <form class="" @submit.prevent="handleLogin">
+            <div class="">
+              <label for="username" class="form-label"></label>
+              <input
+                id="username"
+                v-model="username"
+                type="text"
+                class="form-control"
+                placeholder="Username"
+              />
+
+              <label for="password" class="form-label"></label>
+              <input
+                id="password"
+                v-model="password"
+                type="password"
+                class="form-control"
+                placeholder="Passwort"
+              />
+            </div>
+            <div v-if="loginError">
+              <p class="">Username oder Passwort falsch</p>
+            </div>
+            <div class="">
+              <button type="submit">Login</button>
+            </div>
+          </form>
+        </article>
+      </main>
+      <!-- ./ Main -->
     </div>
 
     <!-- Delete Modal -->
@@ -164,10 +169,10 @@ import { format } from "date-fns";
 import { ref, computed, onMounted } from "vue";
 
 const dbData = ref([]);
-const loggedIn = ref(false);
+const loggedIn = ref(true);
 const loginError = ref(false);
-const username = ref("");
-const password = ref("");
+const username = ref("admin");
+const password = ref("lists-foreman-utilize-AMALGAM");
 const entryToDelete = ref(null);
 let modal = null;
 
