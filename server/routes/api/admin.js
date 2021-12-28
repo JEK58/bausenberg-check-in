@@ -14,8 +14,7 @@ router.get("/", async (req, res) => {
   try {
     if (!checkAuth(req, res)) return;
 
-    const checkIns = await CheckInModel.find({});
-
+    const checkIns = await CheckInModel.find({}).sort({ checkInDate: -1 });
     const didNotStart = await CheckInModel.find({
       landing: "Doch nicht gestartet",
     }).countDocuments();
