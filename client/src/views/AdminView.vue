@@ -90,25 +90,23 @@
         <h4>Bausenberg Admin Panel</h4>
 
         <form @submit.prevent="handleLogin">
-          <div>
-            <label for="username" class="form-label"></label>
-            <input
-              id="username"
-              v-model="username"
-              type="text"
-              class="form-control"
-              placeholder="Username"
-            />
+          <label for="username" class="form-label"></label>
+          <input
+            id="username"
+            v-model="username"
+            type="text"
+            class="form-control"
+            placeholder="Username"
+          />
 
-            <label for="password" class="form-label"></label>
-            <input
-              id="password"
-              v-model="password"
-              type="password"
-              class="form-control"
-              placeholder="Passwort"
-            />
-          </div>
+          <label for="password" class="form-label"></label>
+          <input
+            id="password"
+            v-model="password"
+            type="password"
+            class="form-control"
+            placeholder="Passwort"
+          />
           <p v-if="loginError" class="warning">{{ loginError }}</p>
           <button type="submit">Login</button>
         </form>
@@ -119,7 +117,7 @@
     <dialog id="deleteEntryModal">
       <article>
         <a
-          href="#close"
+          href="#"
           aria-label="Close"
           class="close"
           data-target="deleteEntryModal"
@@ -207,30 +205,31 @@ const fetchDB = async () => {
 };
 
 // Notifications
-const successToast = Swal.mixin({
-  toast: true,
-  position: "top-end",
-  showConfirmButton: false,
-  timer: 3000,
-  timerProgressBar: true,
-});
 
 const indicateSuccess = () => {
+  const successToast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+  });
+
   successToast.fire({
     icon: "success",
     title: "Eintrag gelöscht",
   });
 };
 
-const errorToast = Swal.mixin({
-  toast: true,
-  position: "top-end",
-  showConfirmButton: false,
-  timer: 3000,
-  timerProgressBar: true,
-});
-
 const indicateError = () => {
+  const errorToast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+  });
+
   errorToast.fire({
     icon: "error",
     title: "Da ist leider was schief gelaufen",
