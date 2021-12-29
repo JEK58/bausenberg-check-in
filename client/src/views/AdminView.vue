@@ -89,8 +89,8 @@
       <article>
         <h4>Bausenberg Admin Panel</h4>
 
-        <form class="" @submit.prevent="handleLogin">
-          <div class="">
+        <form @submit.prevent="handleLogin">
+          <div>
             <label for="username" class="form-label"></label>
             <input
               id="username"

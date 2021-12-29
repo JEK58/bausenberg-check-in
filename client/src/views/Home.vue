@@ -20,17 +20,16 @@
           name="btnradioclub"
           value="RML"
         />
-        <label class="" for="btn-rml">RML</label>
+        <label for="btn-rml">RML</label>
 
         <input
           id="btn-dgc"
           v-model="club"
           type="radio"
-          class=""
           name="btnradioclub"
           value="DGC"
         />
-        <label class="" for="btn-dgc">DGC</label>
+        <label for="btn-dgc">DGC</label>
       </section>
       <section>
         <button
