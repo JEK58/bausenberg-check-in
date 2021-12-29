@@ -13,6 +13,12 @@ docker-compose -f docker-compose-prod.yml up --force-recreate --build
 #### Development
 
 ```
+docker-compose -f docker-compose-dev.yml up
+```
+
+Or if the Dockerfile changed:
+
+```
 docker-compose -f docker-compose-dev.yml up --force-recreate --build
 ```
 
@@ -20,13 +26,13 @@ docker-compose -f docker-compose-dev.yml up --force-recreate --build
 
 #### Frontend
 
-- [ ] More beautiful colors and design
+- [x] More beautiful colors and design
 - [x] dark mode
 - [x] Spinner after checkin button pressed
 - [x] Connection error warning
 - [x] Error handling
-- [ ] Make it more leightweight
-- [ ] Make the footer sticky
+- [x] Make it more leightweight
+- [x] Make the footer sticky
 
 #### Home
 
@@ -42,7 +48,7 @@ docker-compose -f docker-compose-dev.yml up --force-recreate --build
 - [ ] Statistics for each year
 - [x] Refresh button
 - [x] Delete entry modal => are you sure?
-- [ ] Error handling
+- [x] Error handling
 - [ ] Export
 
 ### Backend
