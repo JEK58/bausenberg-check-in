@@ -1,26 +1,66 @@
 <template>
   <main class="container">
     <div v-if="loggedIn">
-      <!-- Todo: Sort by years -->
-      <h4>Statistik</h4>
+      <h4>Bausenberg Admin Panel</h4>
+      <nav>
+        <ul>
+          <li><h4>Statistik</h4></li>
+        </ul>
+        <ul>
+          <li>
+            <a href="#" role="button" @click="fetchDB" class="outline"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                fill="currentColor"
+                class="bi bi-arrow-repeat"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"
+                />
+                <path
+                  fill-rule="evenodd"
+                  d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"
+                />
+              </svg>
+            </a>
+          </li>
+          <li>
+            <select id="years" v-model="filterByYear">
+              <option v-for="year in availableYears" :value="year" :key="year">
+                {{ year }}
+              </option>
+            </select>
+          </li>
+        </ul>
+      </nav>
+
+      <h6>
+        Gesamt: <strong>{{ dataToShow?.length }}</strong>
+      </h6>
+
       <ul>
         <li>
-          Landewiese: <strong>{{ dbData?.statistics?.regularLanding }}</strong>
+          Landewiese: <strong>{{ statistics?.regularLanding ?? 0 }}</strong>
         </li>
         <li>
-          Außenlandung:
-          <strong>{{ dbData?.statistics?.alternateLanding }}</strong>
+          Notlandewiese:
+          <strong>{{ statistics?.alternateLanding ?? 0 }}</strong>
         </li>
         <li>
-          Streckenflug:<strong> {{ dbData?.statistics?.xcLanding }}</strong>
+          Streckenflug:<strong> {{ statistics?.xcLanding ?? 0 }}</strong>
         </li>
         <li>
           Nicht gestartet:
-          <strong>{{ dbData?.statistics?.didNotStart }}</strong>
+          <strong>{{ statistics?.didNotStart ?? 0 }}</strong>
+        </li>
+        <li>
+          Landung nicht gemeldet:
+          <strong>{{ statistics?.notReported ?? 0 }}</strong>
         </li>
       </ul>
-
-      <p>(Statistiken pro Jahr kommen demnächst)</p>
 
       <h4>Liste</h4>
 
@@ -54,10 +94,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="checkIn in dbData?.checkIns" :key="checkIn._id">
+          <tr v-for="checkIn in dataToShow" :key="checkIn._id">
             <td>{{ checkIn.name }}</td>
             <td>{{ checkIn.club }}</td>
             <td>{{ checkIn.landing }}</td>
+            <!-- TODO: Ignore timezone… -->
             <td>{{ formatDate(checkIn.checkInDate) }}</td>
             <td>
               <a href="#" class="warning" @click="onDeleteEntry(checkIn)">
@@ -203,7 +244,6 @@ const fetchDB = async () => {
     console.log(error);
   }
 };
-
 // Notifications
 
 const indicateSuccess = () => {
@@ -362,6 +402,56 @@ const getScrollbarWidth = () => {
 const isScrollbarVisible = () => {
   return document.body.scrollHeight > screen.height;
 };
+
+// Filter data
+const filterByYear = ref(format(new Date(), "yyyy"));
+
+const dataToShow = computed(() => {
+  if (!dbData.value) return;
+  if (!filterByYear.value) return dbData.value;
+
+  return dbData.value.filter(
+    (e) => format(new Date(e.checkInDate), "yyyy") == filterByYear.value
+  );
+});
+
+// Statistics
+
+const countOccurences = (array, value) => {
+  let count = 0;
+  array.forEach((x) => {
+    if (x.landing === value) count += 1;
+  });
+  return count;
+};
+
+const statistics = computed(() => {
+  if (!dataToShow.value || dataToShow.value.length < 1) return {};
+
+  const stats = {
+    didNotStart: countOccurences(dataToShow.value, "Doch nicht gestartet"),
+    regularLanding: countOccurences(dataToShow.value, "Landewiese"),
+    alternateLanding: countOccurences(dataToShow.value, "Notlandewiese"),
+    xcLanding: countOccurences(dataToShow.value, "Streckenflug"),
+    notReported: countOccurences(dataToShow.value, undefined),
+  };
+  return stats;
+});
+
+// Get available years
+const availableYears = computed(() => {
+  if (!dbData.value) return;
+
+  // Allways add current year. Even if no flights are present
+  let prevValue = format(new Date(), "yyyy");
+  const years = [prevValue];
+
+  dbData.value.forEach((checkin) => {
+    const year = format(new Date(checkin.checkInDate), "yyyy");
+    if (!years.find((e) => e === year) && year != prevValue) years.push(year);
+  });
+  return years;
+});
 </script>
 <style scoped>
 main {
