@@ -232,7 +232,6 @@ const addCheckOut = async () => {
       showConnectionError.value = false;
       return;
     }
-    console.log(response);
   } catch (error) {
     console.log(error);
     showConnectionError.value = true;
