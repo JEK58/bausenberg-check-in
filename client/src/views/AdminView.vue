@@ -8,7 +8,7 @@
         </ul>
         <ul>
           <li>
-            <a href="#" role="button" class="outline" @click="fetchDB"
+            <a href="#" role="button" class="" @click="fetchDB"
               ><svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
