@@ -8,7 +8,7 @@
         </ul>
         <ul>
           <li>
-            <a href="#" role="button" @click="fetchDB" class="outline"
+            <a href="#" role="button" class="outline" @click="fetchDB"
               ><svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -29,7 +29,7 @@
           </li>
           <li>
             <select id="years" v-model="filterByYear">
-              <option v-for="year in availableYears" :value="year" :key="year">
+              <option v-for="year in availableYears" :key="year" :value="year">
                 {{ year }}
               </option>
             </select>
