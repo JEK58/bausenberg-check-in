@@ -55,3 +55,4 @@ docker-compose -f docker-compose-dev.yml up --force-recreate --build
 ### Backend
 
 - [x] API Rate limit
+- [ ] Use costants for landing options in server & client
