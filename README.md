@@ -45,13 +45,13 @@ docker-compose -f docker-compose-dev.yml up --force-recreate --build
 #### Admin
 
 - [x] Admin Auth
-- [ ] Statistics for each year
+- [x] Statistics for each year
 - [x] Refresh button
 - [x] Delete entry modal => are you sure?
 - [x] Error handling
 - [ ] Export
+- [ ] Sweetalert dark mode
 
 ### Backend
 
 - [x] API Rate limit
-- [x] Use local DB
