@@ -48,7 +48,7 @@ services:
     command: ./docker-entrypoint.sh
 
   db:
-    image: mongo:4
+    image: mongo:4.4.10
     restart: always
     container_name: bausenberg-check-in-db
     environment:

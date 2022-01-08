@@ -14,8 +14,9 @@ router.get("/", async (req, res) => {
   try {
     if (!checkAuth(req, res)) return;
 
-    const response = await CheckInModel.find({});
-    res.send(response);
+    const checkIns = await CheckInModel.find({}).sort({ checkInDate: -1 });
+
+    res.send(checkIns);
     logger.info("Admin connected");
   } catch (error) {
     logger.error(error);

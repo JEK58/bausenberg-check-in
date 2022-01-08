@@ -5,7 +5,7 @@ const logger = require("./winston");
 try {
   mongoose.connect(process.env.DB_CONNECTION, {
     useNewUrlParser: true,
-    useFindAndModify: false,
+    // useFindAndModify: false,
     useUnifiedTopology: true,
   });
 } catch (error) {

@@ -18,11 +18,11 @@ const http = require("http");
 const server = http.createServer(app);
 
 // Middleware
-app.use(express.json({ limit: "5mb" }));
+app.use(express.json());
 app.use(cors());
 
 // Rate Limit
-const rateLimit = require("express-rate-limit");
+const rateLimit = require("express-rate-limit").default;
 // Enable if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 // see https://expressjs.com/en/guide/behind-proxies.html
 // app.set('trust proxy', 1);
@@ -33,8 +33,15 @@ const limiter = rateLimit({
   max: 1, // limit each IP to 100 requests per windowMs
   message: "Zu viele Flüge in zu kurzer Zeit!",
 });
-
 app.use("/api/check-in", limiter);
+
+const adminLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // x minutes
+  max: 10, // limit each IP to 100 requests per windowMs
+  message: "Zu viele Anfragen",
+});
+
+app.use("/api/admin", adminLimiter);
 
 // Routes
 const checkIn = require("./routes/api/check-in");
