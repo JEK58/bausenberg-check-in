@@ -3,8 +3,8 @@ export function getBaseUrl() {
     window.location.protocol.toString() +
     "//" +
     window.location.hostname.toString();
-  if (import.meta.env.DEV) {
-    console.log(import.meta.env.MODE);
+  if (process.env.NODE_ENV == "development") {
+    console.log(process.env.NODE_ENV);
     URL =
       window.location.protocol.toString() +
       "//" +
