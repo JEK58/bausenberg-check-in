@@ -1,15 +1,15 @@
 # Build Stage
-FROM node:14.16.0-alpine3.13 AS build-stage
+FROM node:16.2.0-alpine3.13 AS build-stage
 WORKDIR /app
 ARG API_RATE_LIMIT
 ENV VITE_API_RATE_LIMIT=$API_RATE_LIMIT
-COPY package*.json ./
+COPY package.json yarn.lock ./
 RUN yarn install
 COPY . .
 RUN yarn build
 
 # Production build
-FROM nginx:1.21.3-alpine
+FROM nginx:1.21.4-alpine
 #RUN addgroup app && adduser -S -G app app
 #USER app
 COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
