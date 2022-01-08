@@ -5,8 +5,7 @@ services:
     image: node:16.2.0-alpine3.13
     container_name: bausenberg-check-in-client
     environment:
-      - NODE_ENV=development
-      - VUE_APP_API_RATE_LIMIT=${API_RATE_LIMIT}
+      - VITE_API_RATE_LIMIT=${API_RATE_LIMIT}
     restart: always
     working_dir: /app/
 
