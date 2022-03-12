@@ -10,7 +10,7 @@
           type="text"
           placeholder="Voller Name"
           :value="name"
-          @input="(evt) => (name = evt.target.value)"
+          @input="(evt) => (name = evt.target?.value)"
         />
 
         <input
@@ -163,7 +163,7 @@
   </footer>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import API from "@/services/API";
 import { ref, computed, onBeforeMount } from "vue";
 

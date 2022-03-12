@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getBaseUrl } from "@/shared/base-url-helper";
 
-let baseURL = getBaseUrl();
+const baseURL = getBaseUrl();
 
 const apiClient = axios.create({
   baseURL: baseURL + "/api",

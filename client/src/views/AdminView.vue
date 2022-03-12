@@ -174,7 +174,7 @@
   </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import API from "@/services/API";
 import { ref, computed } from "vue";
 import Swal from "sweetalert2";
