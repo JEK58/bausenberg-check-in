@@ -2,7 +2,7 @@
 // Logging with Winston
 //
 const winston = require("winston");
-const logger = winston.createLogger({
+const _logger = winston.createLogger({
   level: "info",
   format: winston.format.combine(
     winston.format.timestamp({
@@ -30,7 +30,7 @@ const logger = winston.createLogger({
 // with the colorized simple format.
 
 if (process.env.NODE_ENV !== "production") {
-  logger.add(
+  _logger.add(
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
@@ -40,4 +40,4 @@ if (process.env.NODE_ENV !== "production") {
   );
 }
 
-module.exports = logger;
+module.exports = _logger;

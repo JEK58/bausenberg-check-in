@@ -1,18 +1,19 @@
-const express = require("express");
+import express, { Request, Response } from "express";
 const logger = require("../../config/winston");
 
 const router = express.Router();
 
 const CheckInModel = require("../../models/Check-In");
 
-// Add landing to checkIn
-router.put("/:id", async (req, res) => {
+// Add Check-in
+router.post("/", async (req: Request, res: Response) => {
   try {
-    const query = { _id: req.params.id };
-    const response = await CheckInModel.findOneAndUpdate(query, {
-      landing: req.body.landing,
-      checkOutDate: Date.now(),
+    const checkIn = new CheckInModel({
+      name: req.body.name,
+      checkInDate: Date.now(),
+      club: req.body.club,
     });
+    const response = await checkIn.save();
     logger.info(response);
     res.status(201).send(response);
   } catch (error) {
@@ -20,4 +21,5 @@ router.put("/:id", async (req, res) => {
     res.status(400).json("Error: " + error);
   }
 });
+
 module.exports = router;

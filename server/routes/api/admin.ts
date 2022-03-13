@@ -1,4 +1,6 @@
 const express = require("express");
+import { Request, Response } from "express";
+
 const logger = require("../../config/winston");
 const crypto = require("crypto");
 
@@ -10,7 +12,7 @@ const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
 
 // Get Check-ins
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
   try {
     if (!checkAuth(req, res)) return;
 
@@ -25,7 +27,7 @@ router.get("/", async (req, res) => {
 });
 
 // Delete Check-in
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req: Request, res: Response) => {
   try {
     if (!checkAuth(req, res)) return;
     const response = await CheckInModel.findByIdAndDelete(req.params.id);
@@ -37,7 +39,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-function checkAuth(req, res) {
+function checkAuth(req: Request, res: Response) {
   const authorization = req.headers.authorization;
   if (!authorization) {
     logger.error("No login data");

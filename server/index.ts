@@ -27,9 +27,12 @@ const rateLimit = require("express-rate-limit").default;
 // see https://expressjs.com/en/guide/behind-proxies.html
 // app.set('trust proxy', 1);
 
-const API_RATE_LIMIT = process.env.API_RATE_LIMIT;
+const API_RATE_LIMIT = parseInt(process.env.API_RATE_LIMIT || "");
+
 const limiter = rateLimit({
-  windowMs: API_RATE_LIMIT * 60 * 1000, // x minutes
+  windowMs: Number.isInteger(API_RATE_LIMIT)
+    ? API_RATE_LIMIT * 60 * 1000 // x minutes
+    : 10 * 60 * 1000,
   max: 1, // limit each IP to 100 requests per windowMs
   message: "Zu viele Flüge in zu kurzer Zeit!",
 });
@@ -56,7 +59,6 @@ app.use("/api/admin", admin);
 
 // DB Setup
 require("./config/mongoose");
-const CheckInModel = require("./models/Check-In");
 
 const port = process.env.PORT || 3031;
 
