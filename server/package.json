@@ -6,9 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --pretty --transpile-only index.ts",
-    "serve": "nodemon index.js",
-    "start": "ts-node index.ts",
-    "tsc": "tsc && node dist/main.js",
+    "start_alt": "ts-node index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc",
     "lint": "eslint"
   },
   "author": "",
