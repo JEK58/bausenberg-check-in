@@ -5,13 +5,7 @@
       <h3>Bausenberg Check-in</h3>
 
       <section>
-        <input
-          id="name"
-          type="text"
-          placeholder="Voller Name"
-          :value="name"
-          @input="(evt) => (name = evt.target?.value)"
-        />
+        <input id="name" v-model="name" type="text" placeholder="Voller Name" />
 
         <input
           id="btn-rml"
@@ -166,6 +160,7 @@
 <script setup lang="ts">
 import API from "@/services/API";
 import { ref, computed, onBeforeMount } from "vue";
+import axios from "axios";
 
 const name = ref("");
 const club = ref(null);
@@ -192,6 +187,7 @@ onBeforeMount(() => getIdFromLocalStorage());
 const addCheckIn = async () => {
   try {
     showSpinner.value = true;
+    if (!club.value) throw Error;
     const response = await API.addCheckIn({
       name: name.value,
       club: club.value,
@@ -205,26 +201,24 @@ const addCheckIn = async () => {
       return;
     }
   } catch (error) {
-    if (!error.response) {
-      showConnectionError.value = true;
-      showSpinner.value = false;
-      return;
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 429) {
+        showTooManyRequestsWarning.value = true;
+        showSpinner.value = false;
+        return;
+      }
     }
-    if (error.response?.status === 429) {
-      showTooManyRequestsWarning.value = true;
-      showSpinner.value = false;
-      return;
-    }
+    showConnectionError.value = true;
+    showSpinner.value = false;
+    return;
   }
 };
 
 const addCheckOut = async () => {
   try {
     showSpinner.value = true;
-
-    const response = await API.addCheckOut(checkInId.value, {
-      landing: landing.value,
-    });
+    if (!landing.value || !checkInId.value) throw Error;
+    const response = await API.addCheckOut(checkInId.value, landing.value);
     if (response.status === 201) {
       showThankYou.value = true;
       removeIdFromLocalStorage();
@@ -233,25 +227,23 @@ const addCheckOut = async () => {
       return;
     }
   } catch (error) {
-    console.log(error);
     showConnectionError.value = true;
-    if (error?.response?.status === 400) {
-      // Escape if there is something wrong with the server.
-      // User doesn't care. Dirty but good enough.
-      showThankYou.value = true;
-      removeIdFromLocalStorage();
-      showSpinner.value = false;
-
-      return;
+    if (axios.isAxiosError(error)) {
+      if (error?.response?.status === 400) {
+        // Escape if there is something wrong with the server.
+        // User doesn't care. Dirty but good enough.
+        showThankYou.value = true;
+        removeIdFromLocalStorage();
+        showSpinner.value = false;
+        return;
+      }
     }
-    if (!error.response) {
-      showConnectionError.value = true;
-      showSpinner.value = false;
-      return;
-    }
+    showConnectionError.value = true;
+    showSpinner.value = false;
+    return;
   }
 };
-const saveIdToLocalStorage = (id, checkInDate) => {
+const saveIdToLocalStorage = (id: string, checkInDate: string) => {
   localStorage.setItem(
     "check-in-id",
     JSON.stringify({
@@ -261,9 +253,9 @@ const saveIdToLocalStorage = (id, checkInDate) => {
   );
 };
 const getIdFromLocalStorage = () => {
-  if (localStorage.getItem("check-in-id") === null) return;
-
-  const { id } = JSON.parse(localStorage.getItem("check-in-id"));
+  const ls = localStorage.getItem("check-in-id");
+  if (ls === null) return;
+  const { id } = JSON.parse(ls);
   checkInId.value = id;
 };
 
