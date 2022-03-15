@@ -2,6 +2,7 @@
   <main class="container">
     <div v-if="loggedIn">
       <h4>Bausenberg Admin Panel</h4>
+      <!-- Statistics -->
       <nav>
         <ul>
           <li><h4>Statistik</h4></li>
@@ -62,6 +63,7 @@
           </li>
         </ul>
       </article>
+      <!-- Entries -->
       <h4>Liste</h4>
       <article>
         <table>
@@ -177,10 +179,13 @@
 <script setup lang="ts">
 import API from "@/services/API";
 import { ref, computed } from "vue";
-import Swal from "sweetalert2";
-import "sweetalert2/dist/sweetalert2.css";
+import { indicateError, indicateSuccess } from "@/shared/notifications";
 import { formatInTimeZone, format } from "date-fns-tz";
 import axios from "axios";
+import {
+  toggleModal,
+  eventListeners as modalEventListeners,
+} from "@/shared/modal";
 
 interface CheckIn {
   _id: string;
@@ -197,6 +202,8 @@ const loginError = ref<string | boolean>(false);
 const username = ref("");
 const password = ref("");
 const entryToDelete = ref<CheckIn | null>(null);
+
+modalEventListeners();
 
 const authData = computed(() => {
   return {
@@ -238,42 +245,10 @@ const fetchDB = async () => {
     console.log(error);
   }
 };
-// Notifications
-
-const indicateSuccess = () => {
-  const successToast = Swal.mixin({
-    toast: true,
-    position: "top-end",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-  });
-
-  successToast.fire({
-    icon: "success",
-    title: "Eintrag gelöscht",
-  });
-};
-
-const indicateError = () => {
-  const errorToast = Swal.mixin({
-    toast: true,
-    position: "top-end",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-  });
-
-  errorToast.fire({
-    icon: "error",
-    title: "Da ist leider was schief gelaufen",
-  });
-};
 
 // Delete Checkin
 const onDeleteEntry = (entry: CheckIn) => {
   if (entry != null) entryToDelete.value = entry;
-
   toggleModal();
 };
 
@@ -361,107 +336,6 @@ const availableYears = computed(() => {
   });
   return years;
 });
-
-/*
- * Modal
- *
- * Pico.css - https://picocss.com
- * Copyright 2019-2021 - Licensed under MIT
- */
-
-// Config
-const isOpenClass = "modal-is-open";
-const openingClass = "modal-is-opening";
-const closingClass = "modal-is-closing";
-const animationDuration = 400; // ms
-let visibleModal: HTMLElement | null = null;
-
-// Toggle modal
-const toggleModal = () => {
-  // event.preventDefault();
-  const modal: HTMLElement | null = document.getElementById("deleteEntryModal");
-  typeof modal != "undefined" && modal != null && isModalOpen(modal)
-    ? closeModal(modal)
-    : openModal(modal);
-};
-
-// Is modal open
-const isModalOpen = (modal: HTMLElement) => {
-  return modal.hasAttribute("open") && modal.getAttribute("open") != "false"
-    ? true
-    : false;
-};
-
-// Open modal
-const openModal = (modal: HTMLElement | null) => {
-  if (isScrollbarVisible()) {
-    document.documentElement.style.setProperty(
-      "--scrollbar-width",
-      `${getScrollbarWidth()}px`
-    );
-  }
-  document.documentElement.classList.add(isOpenClass, openingClass);
-  setTimeout(() => {
-    visibleModal = modal;
-    document.documentElement.classList.remove(openingClass);
-  }, animationDuration);
-  if (modal) modal.setAttribute("open", "true");
-};
-
-// Close modal
-const closeModal = (modal: HTMLElement) => {
-  visibleModal = null;
-  document.documentElement.classList.add(closingClass);
-  setTimeout(() => {
-    document.documentElement.classList.remove(closingClass, isOpenClass);
-    document.documentElement.style.removeProperty("--scrollbar-width");
-    modal.removeAttribute("open");
-  }, animationDuration);
-};
-
-// Close with a click outside
-document.addEventListener("click", (event: MouseEvent) => {
-  if (visibleModal != null) {
-    const modalContent = visibleModal.querySelector("article");
-    if (!modalContent) return;
-    const isClickInside = modalContent.contains(event.target as HTMLElement);
-    !isClickInside && closeModal(visibleModal);
-  }
-});
-
-// Close with Esc key
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && visibleModal != null) {
-    closeModal(visibleModal);
-  }
-});
-
-// Get scrollbar width
-const getScrollbarWidth = () => {
-  // Creating invisible container
-  const outer = document.createElement("div");
-  outer.style.visibility = "hidden";
-  outer.style.overflow = "scroll"; // forcing scrollbar to appear
-  // outer.style.msOverflowStyle = "scrollbar"; // needed for WinJS apps
-  document.body.appendChild(outer);
-
-  // Creating inner element and placing it in the container
-  const inner = document.createElement("div");
-  outer.appendChild(inner);
-
-  // Calculating difference between container's full width and the child width
-  const scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
-
-  // Removing temporary elements from the DOM
-  if (outer.parentNode) outer.parentNode.removeChild(outer);
-
-  return scrollbarWidth;
-};
-
-// Is scrollbar visible
-const isScrollbarVisible = () => {
-  return document.body.scrollHeight > screen.height;
-};
 </script>
 <style scoped>
 main {
