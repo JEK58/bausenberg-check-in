@@ -186,15 +186,7 @@ import {
   toggleModal,
   eventListeners as modalEventListeners,
 } from "@/shared/modal";
-
-interface CheckIn {
-  _id: string;
-  checkInDate: number;
-  name: string;
-  club: string;
-  landing: string;
-  __v: number;
-}
+import type CheckIn from "@/types/Checkin";
 
 const dbData = ref<CheckIn[] | null>(null);
 const loggedIn = ref(false);

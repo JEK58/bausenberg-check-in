@@ -1,3 +1,118 @@
+<script setup lang="ts">
+import API from "@/services/API";
+import { ref, computed, onBeforeMount } from "vue";
+import axios from "axios";
+
+const name = ref("");
+const club = ref(null);
+const landing = ref(null);
+const checkInId = ref(null);
+const showThankYou = ref(false);
+const showTooManyRequestsWarning = ref(false);
+const showSpinner = ref(false);
+const showConnectionError = ref(false);
+
+const apiRateLimitCountDown = import.meta.env.VITE_API_RATE_LIMIT;
+
+const checkInButtonIsActive = computed(() => {
+  const regex = /(\w|[üäöÄÜÖß-]){3,} (\w|[üäöÄÜÖß-]){3,}/;
+  if (name.value.match(regex) && club.value) return true;
+  return false;
+});
+const checkoutButtonIsDisabled = computed(() => {
+  return !landing.value;
+});
+
+onBeforeMount(() => getIdFromLocalStorage());
+
+const addCheckIn = async () => {
+  try {
+    showSpinner.value = true;
+    if (!club.value) throw Error;
+    const response = await API.addCheckIn({
+      name: name.value,
+      club: club.value,
+    });
+    if (response.status === 201) {
+      checkInId.value = response.data._id;
+      saveIdToLocalStorage(response.data._id, response.data.checkInDate);
+      showSpinner.value = false;
+      showConnectionError.value = false;
+
+      return;
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 429) {
+        showTooManyRequestsWarning.value = true;
+        showSpinner.value = false;
+        return;
+      }
+    }
+    showConnectionError.value = true;
+    showSpinner.value = false;
+    return;
+  }
+};
+
+const addCheckOut = async () => {
+  try {
+    showSpinner.value = true;
+    if (!landing.value || !checkInId.value) throw Error;
+    const response = await API.addCheckOut(checkInId.value, landing.value);
+    if (response.status === 201) {
+      showThankYou.value = true;
+      removeIdFromLocalStorage();
+      showSpinner.value = false;
+      showConnectionError.value = false;
+      return;
+    }
+  } catch (error) {
+    showConnectionError.value = true;
+    if (axios.isAxiosError(error)) {
+      if (error?.response?.status === 400) {
+        // Escape if there is something wrong with the server.
+        // User doesn't care. Dirty but good enough.
+        showThankYou.value = true;
+        removeIdFromLocalStorage();
+        showSpinner.value = false;
+        return;
+      }
+    }
+    showConnectionError.value = true;
+    showSpinner.value = false;
+    return;
+  }
+};
+const saveIdToLocalStorage = (id: string, checkInDate: string) => {
+  localStorage.setItem(
+    "check-in-id",
+    JSON.stringify({
+      id: id,
+      date: checkInDate,
+    })
+  );
+};
+const getIdFromLocalStorage = () => {
+  const ls = localStorage.getItem("check-in-id");
+  if (ls === null) return;
+  const { id } = JSON.parse(ls);
+  checkInId.value = id;
+};
+
+const removeIdFromLocalStorage = () => {
+  localStorage.removeItem("check-in-id");
+};
+
+const resetApp = () => {
+  checkInId.value = null;
+  landing.value = null;
+  showThankYou.value = false;
+  showTooManyRequestsWarning.value = false;
+  showSpinner.value = false;
+  showConnectionError.value = false;
+};
+</script>
 <template>
   <main class="container">
     <!-- Check-in -->
@@ -156,123 +271,6 @@
     </p>
   </footer>
 </template>
-
-<script setup lang="ts">
-import API from "@/services/API";
-import { ref, computed, onBeforeMount } from "vue";
-import axios from "axios";
-
-const name = ref("");
-const club = ref(null);
-const landing = ref(null);
-const checkInId = ref(null);
-const showThankYou = ref(false);
-const showTooManyRequestsWarning = ref(false);
-const showSpinner = ref(false);
-const showConnectionError = ref(false);
-
-const apiRateLimitCountDown = import.meta.env.VITE_API_RATE_LIMIT;
-
-const checkInButtonIsActive = computed(() => {
-  const regex = /(\w|[üäöÄÜÖß-]){3,} (\w|[üäöÄÜÖß-]){3,}/;
-  if (name.value.match(regex) && club.value) return true;
-  return false;
-});
-const checkoutButtonIsDisabled = computed(() => {
-  return !landing.value;
-});
-
-onBeforeMount(() => getIdFromLocalStorage());
-
-const addCheckIn = async () => {
-  try {
-    showSpinner.value = true;
-    if (!club.value) throw Error;
-    const response = await API.addCheckIn({
-      name: name.value,
-      club: club.value,
-    });
-    if (response.status === 201) {
-      checkInId.value = response.data._id;
-      saveIdToLocalStorage(response.data._id, response.data.checkInDate);
-      showSpinner.value = false;
-      showConnectionError.value = false;
-
-      return;
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      if (error.response?.status === 429) {
-        showTooManyRequestsWarning.value = true;
-        showSpinner.value = false;
-        return;
-      }
-    }
-    showConnectionError.value = true;
-    showSpinner.value = false;
-    return;
-  }
-};
-
-const addCheckOut = async () => {
-  try {
-    showSpinner.value = true;
-    if (!landing.value || !checkInId.value) throw Error;
-    const response = await API.addCheckOut(checkInId.value, landing.value);
-    if (response.status === 201) {
-      showThankYou.value = true;
-      removeIdFromLocalStorage();
-      showSpinner.value = false;
-      showConnectionError.value = false;
-      return;
-    }
-  } catch (error) {
-    showConnectionError.value = true;
-    if (axios.isAxiosError(error)) {
-      if (error?.response?.status === 400) {
-        // Escape if there is something wrong with the server.
-        // User doesn't care. Dirty but good enough.
-        showThankYou.value = true;
-        removeIdFromLocalStorage();
-        showSpinner.value = false;
-        return;
-      }
-    }
-    showConnectionError.value = true;
-    showSpinner.value = false;
-    return;
-  }
-};
-const saveIdToLocalStorage = (id: string, checkInDate: string) => {
-  localStorage.setItem(
-    "check-in-id",
-    JSON.stringify({
-      id: id,
-      date: checkInDate,
-    })
-  );
-};
-const getIdFromLocalStorage = () => {
-  const ls = localStorage.getItem("check-in-id");
-  if (ls === null) return;
-  const { id } = JSON.parse(ls);
-  checkInId.value = id;
-};
-
-const removeIdFromLocalStorage = () => {
-  localStorage.removeItem("check-in-id");
-};
-
-const resetApp = () => {
-  checkInId.value = null;
-  landing.value = null;
-  showThankYou.value = false;
-  showTooManyRequestsWarning.value = false;
-  showSpinner.value = false;
-  showConnectionError.value = false;
-};
-</script>
-
 <style scoped>
 main {
   min-height: calc(100vh - 3rem);
