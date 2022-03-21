@@ -1,10 +1,9 @@
 import express, { Request, Response } from "express";
 import logger from "../../config/winston";
+import CheckInModel from "../../models/Check-In";
 
 // TODO: Check routes
 const router = express.Router();
-
-import CheckInModel from "../../models/Check-In";
 
 // Add landing to checkIn
 router.put("/:id", async (req: Request, res: Response) => {

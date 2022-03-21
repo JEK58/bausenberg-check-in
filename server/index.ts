@@ -1,11 +1,14 @@
-// require("dotenv").config();
 import dotenv from "dotenv";
-dotenv.config();
-
 import express from "express";
-
-// Logging with Winston
 import logger from "./config/winston";
+import cors from "cors";
+import http from "http";
+import checkIn from "./routes/api/check-in";
+import checkOut from "./routes/api/check-out";
+import admin from "./routes/api/admin";
+import "./config/mongoose";
+
+dotenv.config();
 
 // Error handling
 process.on("uncaughtException", (err) => {
@@ -13,10 +16,7 @@ process.on("uncaughtException", (err) => {
   process.exit(1); //mandatory (as per the Node.js docs)
 });
 
-import cors from "cors";
-
 const app = express();
-import http from "http";
 const server = http.createServer(app);
 
 // Middleware
@@ -49,18 +49,10 @@ const adminLimiter = rateLimit({
 app.use("/api/admin", adminLimiter);
 
 // Routes
-import checkIn from "./routes/api/check-in";
-import checkOut from "./routes/api/check-out";
-
 app.use("/api/check-in", checkIn);
 app.use("/api/check-out", checkOut);
 
-import admin from "./routes/api/admin";
-
 app.use("/api/admin", admin);
-
-// DB Setup
-import "./config/mongoose";
 
 const port = process.env.PORT || 3031;
 

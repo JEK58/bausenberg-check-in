@@ -1,9 +1,8 @@
 import express, { Request, Response } from "express";
 import logger from "../../config/winston";
+import CheckInModel from "../../models/Check-In";
 
 const router = express.Router();
-
-import CheckInModel from "../../models/Check-In";
 
 // Add Check-in
 router.post("/", async (req: Request, res: Response) => {

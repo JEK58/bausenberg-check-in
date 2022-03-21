@@ -1,12 +1,10 @@
 import express from "express";
 import { Request, Response } from "express";
-
 import logger from "../../config/winston";
 import crypto from "crypto";
+import CheckInModel from "../../models/Check-In";
 
 const router = express.Router();
-
-import CheckInModel from "../../models/Check-In";
 
 const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME;

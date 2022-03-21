@@ -6,7 +6,7 @@ then
     # https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md#cmd
     # yarn build
     # exec yarn start
-    yarn start_alt 
+    exec yarn start_alt 
 else
-    yarn dev
+    exec yarn dev
 fi
