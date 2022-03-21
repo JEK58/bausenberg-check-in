@@ -1,9 +1,10 @@
 import express, { Request, Response } from "express";
-const logger = require("../../config/winston");
+import logger from "../../config/winston";
 
+// TODO: Check routes
 const router = express.Router();
 
-const CheckInModel = require("../../models/Check-In");
+import CheckInModel from "../../models/Check-In";
 
 // Add landing to checkIn
 router.put("/:id", async (req: Request, res: Response) => {
@@ -20,4 +21,4 @@ router.put("/:id", async (req: Request, res: Response) => {
     res.status(400).json("Error: " + error);
   }
 });
-module.exports = router;
+export default router;

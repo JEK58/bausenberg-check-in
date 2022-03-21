@@ -1,5 +1,5 @@
 import mongoose, { Error } from "mongoose";
-const logger = require("./winston");
+import logger from "./winston";
 
 // Initial connection
 try {
@@ -15,5 +15,3 @@ mongoose.connection.on("error", (err: Error) => {
 const mongodb = mongoose.connection;
 mongodb.on("error", () => logger.error("connection error:"));
 mongodb.once("open", () => logger.info("Connected to DB"));
-
-// module.exports = mongoose;

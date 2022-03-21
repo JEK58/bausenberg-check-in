@@ -2,10 +2,12 @@
 import API from "@/services/API";
 import { ref, computed, onBeforeMount } from "vue";
 import axios from "axios";
+import Landing from "@/types/Landing";
+import Club from "@//types/Club";
 
 const name = ref("");
-const club = ref(null);
-const landing = ref(null);
+const club = ref<Club | null>(null);
+const landing = ref<Landing | null>(null);
 const checkInId = ref(null);
 const showThankYou = ref(false);
 const showTooManyRequestsWarning = ref(false);
@@ -127,7 +129,7 @@ const resetApp = () => {
           v-model="club"
           type="radio"
           name="btnradioclub"
-          value="RML"
+          :value="Club.RML"
         />
         <label for="btn-rml">RML</label>
 
@@ -136,7 +138,7 @@ const resetApp = () => {
           v-model="club"
           type="radio"
           name="btnradioclub"
-          value="DGC"
+          :value="Club.DGC"
         />
         <label for="btn-dgc">DGC</label>
       </section>
@@ -193,7 +195,7 @@ const resetApp = () => {
             v-model="landing"
             type="radio"
             name="btnradio"
-            value="Landewiese"
+            :value="Landing.MainLanding"
           />
           Landewiese 👌
         </label>
@@ -204,7 +206,7 @@ const resetApp = () => {
             v-model="landing"
             type="radio"
             name="btnradio"
-            value="Notlandewiese"
+            :value="Landing.AltLanding"
           />
           Notlandewiese 🧐
         </label>
@@ -215,7 +217,7 @@ const resetApp = () => {
             v-model="landing"
             type="radio"
             name="btnradio"
-            value="Streckenflug"
+            :value="Landing.XCLanding"
           />
           Streckenflug 🎉
         </label>
@@ -226,7 +228,7 @@ const resetApp = () => {
             v-model="landing"
             type="radio"
             name="btnradio"
-            value="Doch nicht gestartet"
+            :value="Landing.NoTakeoff"
           />
           Doch nicht gestartet 🤷
         </label>

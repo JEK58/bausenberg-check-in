@@ -1,6 +1,9 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
+import type CheckIn from "../../client/src/types/Checkin";
+import Club from "../../client/src/types/Club";
+import Landing from "../../client/src/types/Landing";
 
-const CheckInSchema = mongoose.Schema({
+const CheckInSchema = new Schema<CheckIn>({
   checkInDate: {
     type: Number,
     required: true,
@@ -17,14 +20,13 @@ const CheckInSchema = mongoose.Schema({
   club: {
     type: String,
     required: true,
-    enum: ["RML", "DGC"],
+    enum: Club,
   },
   landing: {
     type: String,
     required: false,
-    enum: ["Landewiese", "Notlandewiese", "Streckenflug"],
+    enum: Object.values(Landing),
   },
 });
 
-const CheckIn = mongoose.model("CheckIn", CheckInSchema);
-module.exports = CheckIn;
+export default model("CheckIn", CheckInSchema);

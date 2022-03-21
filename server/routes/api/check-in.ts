@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
-const logger = require("../../config/winston");
+import logger from "../../config/winston";
 
 const router = express.Router();
 
-const CheckInModel = require("../../models/Check-In");
+import CheckInModel from "../../models/Check-In";
 
 // Add Check-in
 router.post("/", async (req: Request, res: Response) => {
@@ -22,4 +22,4 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-module.exports = router;
+export default router;

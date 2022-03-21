@@ -1,12 +1,12 @@
-const express = require("express");
+import express from "express";
 import { Request, Response } from "express";
 
-const logger = require("../../config/winston");
-const crypto = require("crypto");
+import logger from "../../config/winston";
+import crypto from "crypto";
 
 const router = express.Router();
 
-const CheckInModel = require("../../models/Check-In");
+import CheckInModel from "../../models/Check-In";
 
 const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
@@ -63,4 +63,4 @@ function checkAuth(req: Request, res: Response) {
   return true;
 }
 
-module.exports = router;
+export default router;
