@@ -25,7 +25,7 @@ const CheckInSchema = new Schema<CheckIn>({
   landing: {
     type: String,
     required: false,
-    enum: Object.values(Landing),
+    enum: Landing,
   },
 });
 
