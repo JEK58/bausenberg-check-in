@@ -1,4 +1,4 @@
 #!/bin/sh
 
-yarn install
+exec yarn install
 exec yarn dev --host
