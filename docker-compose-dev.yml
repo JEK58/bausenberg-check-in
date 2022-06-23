@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   client:
-    image: node:16.2.0-alpine3.13
+    image: node:18.4.0-alpine3.16
     container_name: bausenberg-check-in-client
     environment:
       - VITE_API_RATE_LIMIT=${API_RATE_LIMIT}
@@ -20,7 +20,7 @@ services:
       - 8080:8080
 
   server:
-    image: node:16.2.0-alpine3.13
+    image: node:18.4.0-alpine3.16
     restart: always
     container_name: bausenberg-check-in-server
     environment:
