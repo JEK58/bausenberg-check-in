@@ -1,5 +1,4 @@
 #!/bin/sh
-exec yarn install
 
 if [ $NODE_ENV == "production" ]
 then
