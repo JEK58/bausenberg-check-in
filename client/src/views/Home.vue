@@ -1,3 +1,120 @@
+<script setup lang="ts">
+import API from "@/services/API";
+import { ref, computed, onBeforeMount } from "vue";
+import axios from "axios";
+import Landing from "@/types/Landing";
+import Club from "@//types/Club";
+
+const name = ref("");
+const club = ref<Club | null>(null);
+const landing = ref<Landing | null>(null);
+const checkInId = ref(null);
+const showThankYou = ref(false);
+const showTooManyRequestsWarning = ref(false);
+const showSpinner = ref(false);
+const showConnectionError = ref(false);
+
+const apiRateLimitCountDown = import.meta.env.VITE_API_RATE_LIMIT;
+
+const checkInButtonIsActive = computed(() => {
+  const regex = /(\w|[üäöÄÜÖß-]){3,} (\w|[üäöÄÜÖß-]){3,}/;
+  if (name.value.match(regex) && club.value) return true;
+  return false;
+});
+const checkoutButtonIsDisabled = computed(() => {
+  return !landing.value;
+});
+
+onBeforeMount(() => getIdFromLocalStorage());
+
+const addCheckIn = async () => {
+  try {
+    showSpinner.value = true;
+    if (!club.value) throw Error;
+    const response = await API.addCheckIn({
+      name: name.value,
+      club: club.value,
+    });
+    if (response.status === 201) {
+      checkInId.value = response.data._id;
+      saveIdToLocalStorage(response.data._id, response.data.checkInDate);
+      showSpinner.value = false;
+      showConnectionError.value = false;
+
+      return;
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 429) {
+        showTooManyRequestsWarning.value = true;
+        showSpinner.value = false;
+        return;
+      }
+    }
+    showConnectionError.value = true;
+    showSpinner.value = false;
+    return;
+  }
+};
+
+const addCheckOut = async () => {
+  try {
+    showSpinner.value = true;
+    if (!landing.value || !checkInId.value) throw Error;
+    const response = await API.addCheckOut(checkInId.value, landing.value);
+    if (response.status === 201) {
+      showThankYou.value = true;
+      removeIdFromLocalStorage();
+      showSpinner.value = false;
+      showConnectionError.value = false;
+      return;
+    }
+  } catch (error) {
+    showConnectionError.value = true;
+    if (axios.isAxiosError(error)) {
+      if (error?.response?.status === 400) {
+        // Escape if there is something wrong with the server.
+        // User doesn't care. Dirty but good enough.
+        showThankYou.value = true;
+        removeIdFromLocalStorage();
+        showSpinner.value = false;
+        return;
+      }
+    }
+    showConnectionError.value = true;
+    showSpinner.value = false;
+    return;
+  }
+};
+const saveIdToLocalStorage = (id: string, checkInDate: string) => {
+  localStorage.setItem(
+    "check-in-id",
+    JSON.stringify({
+      id: id,
+      date: checkInDate,
+    })
+  );
+};
+const getIdFromLocalStorage = () => {
+  const ls = localStorage.getItem("check-in-id");
+  if (ls === null) return;
+  const { id } = JSON.parse(ls);
+  checkInId.value = id;
+};
+
+const removeIdFromLocalStorage = () => {
+  localStorage.removeItem("check-in-id");
+};
+
+const resetApp = () => {
+  checkInId.value = null;
+  landing.value = null;
+  showThankYou.value = false;
+  showTooManyRequestsWarning.value = false;
+  showSpinner.value = false;
+  showConnectionError.value = false;
+};
+</script>
 <template>
   <main class="container">
     <!-- Check-in -->
@@ -5,20 +122,14 @@
       <h3>Bausenberg Check-in</h3>
 
       <section>
-        <input
-          id="name"
-          type="text"
-          placeholder="Voller Name"
-          :value="name"
-          @input="(evt) => (name = evt.target.value)"
-        />
+        <input id="name" v-model="name" type="text" placeholder="Voller Name" />
 
         <input
           id="btn-rml"
           v-model="club"
           type="radio"
           name="btnradioclub"
-          value="RML"
+          :value="Club.RML"
         />
         <label for="btn-rml">RML</label>
 
@@ -27,7 +138,7 @@
           v-model="club"
           type="radio"
           name="btnradioclub"
-          value="DGC"
+          :value="Club.DGC"
         />
         <label for="btn-dgc">DGC</label>
       </section>
@@ -84,7 +195,7 @@
             v-model="landing"
             type="radio"
             name="btnradio"
-            value="Landewiese"
+            :value="Landing.MainLanding"
           />
           Landewiese 👌
         </label>
@@ -95,7 +206,7 @@
             v-model="landing"
             type="radio"
             name="btnradio"
-            value="Notlandewiese"
+            :value="Landing.AltLanding"
           />
           Notlandewiese 🧐
         </label>
@@ -106,7 +217,7 @@
             v-model="landing"
             type="radio"
             name="btnradio"
-            value="Streckenflug"
+            :value="Landing.XCLanding"
           />
           Streckenflug 🎉
         </label>
@@ -117,7 +228,7 @@
             v-model="landing"
             type="radio"
             name="btnradio"
-            value="Doch nicht gestartet"
+            :value="Landing.NoTakeoff"
           />
           Doch nicht gestartet 🤷
         </label>
@@ -162,125 +273,6 @@
     </p>
   </footer>
 </template>
-
-<script setup>
-import API from "@/services/API";
-import { ref, computed, onBeforeMount } from "vue";
-
-const name = ref("");
-const club = ref(null);
-const landing = ref(null);
-const checkInId = ref(null);
-const showThankYou = ref(false);
-const showTooManyRequestsWarning = ref(false);
-const showSpinner = ref(false);
-const showConnectionError = ref(false);
-
-const apiRateLimitCountDown = import.meta.env.VITE_API_RATE_LIMIT;
-
-const checkInButtonIsActive = computed(() => {
-  const regex = /(\w|[üäöÄÜÖß-]){3,} (\w|[üäöÄÜÖß-]){3,}/;
-  if (name.value.match(regex) && club.value) return true;
-  return false;
-});
-const checkoutButtonIsDisabled = computed(() => {
-  return !landing.value;
-});
-
-onBeforeMount(() => getIdFromLocalStorage());
-
-const addCheckIn = async () => {
-  try {
-    showSpinner.value = true;
-    const response = await API.addCheckIn({
-      name: name.value,
-      club: club.value,
-    });
-    if (response.status === 201) {
-      checkInId.value = response.data._id;
-      saveIdToLocalStorage(response.data._id, response.data.checkInDate);
-      showSpinner.value = false;
-      showConnectionError.value = false;
-
-      return;
-    }
-  } catch (error) {
-    if (!error.response) {
-      showConnectionError.value = true;
-      showSpinner.value = false;
-      return;
-    }
-    if (error.response?.status === 429) {
-      showTooManyRequestsWarning.value = true;
-      showSpinner.value = false;
-      return;
-    }
-  }
-};
-
-const addCheckOut = async () => {
-  try {
-    showSpinner.value = true;
-
-    const response = await API.addCheckOut(checkInId.value, {
-      landing: landing.value,
-    });
-    if (response.status === 201) {
-      showThankYou.value = true;
-      removeIdFromLocalStorage();
-      showSpinner.value = false;
-      showConnectionError.value = false;
-      return;
-    }
-  } catch (error) {
-    console.log(error);
-    showConnectionError.value = true;
-    if (error?.response?.status === 400) {
-      // Escape if there is something wrong with the server.
-      // User doesn't care. Dirty but good enough.
-      showThankYou.value = true;
-      removeIdFromLocalStorage();
-      showSpinner.value = false;
-
-      return;
-    }
-    if (!error.response) {
-      showConnectionError.value = true;
-      showSpinner.value = false;
-      return;
-    }
-  }
-};
-const saveIdToLocalStorage = (id, checkInDate) => {
-  localStorage.setItem(
-    "check-in-id",
-    JSON.stringify({
-      id: id,
-      date: checkInDate,
-    })
-  );
-};
-const getIdFromLocalStorage = () => {
-  if (localStorage.getItem("check-in-id") === null) return;
-
-  const { id } = JSON.parse(localStorage.getItem("check-in-id"));
-  checkInId.value = id;
-};
-
-const removeIdFromLocalStorage = () => {
-  localStorage.removeItem("check-in-id");
-};
-
-const resetApp = () => {
-  checkInId.value = null;
-  landing.value = null;
-  showThankYou.value = false;
-  showTooManyRequestsWarning.value = false;
-  showSpinner.value = false;
-  showConnectionError.value = false;
-};
-</script>
-
 <style scoped>
 main {
   min-height: calc(100vh - 3rem);

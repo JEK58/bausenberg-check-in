@@ -2,6 +2,7 @@
   <main class="container">
     <div v-if="loggedIn">
       <h4>Bausenberg Admin Panel</h4>
+      <!-- Statistics -->
       <nav>
         <ul>
           <li><h4>Statistik</h4></li>
@@ -62,6 +63,7 @@
           </li>
         </ul>
       </article>
+      <!-- Entries -->
       <h4>Liste</h4>
       <article>
         <table>
@@ -174,19 +176,26 @@
   </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import API from "@/services/API";
 import { ref, computed } from "vue";
-import Swal from "sweetalert2";
-import "sweetalert2/dist/sweetalert2.css";
+import { indicateError, indicateSuccess } from "@/shared/notifications";
 import { formatInTimeZone, format } from "date-fns-tz";
+import axios from "axios";
+import {
+  toggleModal,
+  eventListeners as modalEventListeners,
+} from "@/shared/modal";
+import type CheckIn from "@/types/Checkin";
 
-const dbData = ref(null);
+const dbData = ref<CheckIn[] | null>(null);
 const loggedIn = ref(false);
-const loginError = ref(false);
+const loginError = ref<string | boolean>(false);
 const username = ref("");
 const password = ref("");
-const entryToDelete = ref(null);
+const entryToDelete = ref<CheckIn | null>(null);
+
+modalEventListeners();
 
 const authData = computed(() => {
   return {
@@ -204,13 +213,15 @@ const handleLogin = async () => {
     loginError.value = false;
   } catch (error) {
     loggedIn.value = false;
-    if (error.response?.status === 429) {
-      loginError.value = "Zu viele Anmeldeversuche, warte bitte eine Minute";
-      return;
-    }
-    if (error.response?.status === 401) {
-      loginError.value = "Username oder Passwort falsch";
-      return;
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 429) {
+        loginError.value = "Zu viele Anmeldeversuche, warte bitte eine Minute";
+        return;
+      }
+      if (error.response?.status === 401) {
+        loginError.value = "Username oder Passwort falsch";
+        return;
+      }
     }
     indicateError();
   }
@@ -226,46 +237,17 @@ const fetchDB = async () => {
     console.log(error);
   }
 };
-// Notifications
-
-const indicateSuccess = () => {
-  const successToast = Swal.mixin({
-    toast: true,
-    position: "top-end",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-  });
-
-  successToast.fire({
-    icon: "success",
-    title: "Eintrag gelöscht",
-  });
-};
-
-const indicateError = () => {
-  const errorToast = Swal.mixin({
-    toast: true,
-    position: "top-end",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-  });
-
-  errorToast.fire({
-    icon: "error",
-    title: "Da ist leider was schief gelaufen",
-  });
-};
 
 // Delete Checkin
-const onDeleteEntry = (entry) => {
-  entryToDelete.value = entry;
+const onDeleteEntry = (entry: CheckIn) => {
+  if (entry != null) entryToDelete.value = entry;
   toggleModal();
 };
 
 const deleteEntry = async () => {
   try {
+    if (!entryToDelete.value) throw new Error("No entry to delete");
+
     const response = await API.deleteEntry(
       entryToDelete.value._id,
       authData.value
@@ -280,113 +262,13 @@ const deleteEntry = async () => {
   }
 };
 // Format date
-const formatDate = (timestamp) => {
+const formatDate = (timestamp: number | undefined) => {
   if (!timestamp) return "-";
   return formatInTimeZone(
     new Date(timestamp),
     "Europe/Berlin",
     "dd.MM.yy - HH:mm"
   );
-};
-
-/*
- * Modal
- *
- * Pico.css - https://picocss.com
- * Copyright 2019-2021 - Licensed under MIT
- */
-
-// Config
-const isOpenClass = "modal-is-open";
-const openingClass = "modal-is-opening";
-const closingClass = "modal-is-closing";
-const animationDuration = 400; // ms
-let visibleModal = null;
-
-// Toggle modal
-const toggleModal = () => {
-  // event.preventDefault();
-  const modal = document.getElementById("deleteEntryModal");
-  typeof modal != "undefined" && modal != null && isModalOpen(modal)
-    ? closeModal(modal)
-    : openModal(modal);
-};
-
-// Is modal open
-const isModalOpen = (modal) => {
-  return modal.hasAttribute("open") && modal.getAttribute("open") != "false"
-    ? true
-    : false;
-};
-
-// Open modal
-const openModal = (modal) => {
-  if (isScrollbarVisible()) {
-    document.documentElement.style.setProperty(
-      "--scrollbar-width",
-      `${getScrollbarWidth()}px`
-    );
-  }
-  document.documentElement.classList.add(isOpenClass, openingClass);
-  setTimeout(() => {
-    visibleModal = modal;
-    document.documentElement.classList.remove(openingClass);
-  }, animationDuration);
-  modal.setAttribute("open", true);
-};
-
-// Close modal
-const closeModal = (modal) => {
-  visibleModal = null;
-  document.documentElement.classList.add(closingClass);
-  setTimeout(() => {
-    document.documentElement.classList.remove(closingClass, isOpenClass);
-    document.documentElement.style.removeProperty("--scrollbar-width");
-    modal.removeAttribute("open");
-  }, animationDuration);
-};
-
-// Close with a click outside
-document.addEventListener("click", (event) => {
-  if (visibleModal != null) {
-    const modalContent = visibleModal.querySelector("article");
-    const isClickInside = modalContent.contains(event.target);
-    !isClickInside && closeModal(visibleModal);
-  }
-});
-
-// Close with Esc key
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && visibleModal != null) {
-    closeModal(visibleModal);
-  }
-});
-
-// Get scrollbar width
-const getScrollbarWidth = () => {
-  // Creating invisible container
-  const outer = document.createElement("div");
-  outer.style.visibility = "hidden";
-  outer.style.overflow = "scroll"; // forcing scrollbar to appear
-  outer.style.msOverflowStyle = "scrollbar"; // needed for WinJS apps
-  document.body.appendChild(outer);
-
-  // Creating inner element and placing it in the container
-  const inner = document.createElement("div");
-  outer.appendChild(inner);
-
-  // Calculating difference between container's full width and the child width
-  const scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
-
-  // Removing temporary elements from the DOM
-  outer.parentNode.removeChild(outer);
-
-  return scrollbarWidth;
-};
-
-// Is scrollbar visible
-const isScrollbarVisible = () => {
-  return document.body.scrollHeight > screen.height;
 };
 
 // Filter data
@@ -397,30 +279,38 @@ const dataToShow = computed(() => {
   if (!filterByYear.value) return dbData.value;
 
   return dbData.value.filter(
-    (e) => format(new Date(e.checkInDate), "yyyy") == filterByYear.value
+    (e: CheckIn) =>
+      format(new Date(e.checkInDate), "yyyy") == filterByYear.value
   );
 });
 
 // Statistics
-
-const countOccurences = (array, value) => {
+const countOccurences = (
+  array: CheckIn[],
+  searchString: string | undefined
+) => {
   let count = 0;
   array.forEach((x) => {
-    if (x.landing === value) count += 1;
+    if (x.landing === searchString) count += 1;
   });
   return count;
 };
 
 const statistics = computed(() => {
-  if (!dataToShow.value || dataToShow.value.length < 1) return {};
-
   const stats = {
-    didNotStart: countOccurences(dataToShow.value, "Doch nicht gestartet"),
-    regularLanding: countOccurences(dataToShow.value, "Landewiese"),
-    alternateLanding: countOccurences(dataToShow.value, "Notlandewiese"),
-    xcLanding: countOccurences(dataToShow.value, "Streckenflug"),
-    notReported: countOccurences(dataToShow.value, undefined),
+    didNotStart: 0,
+    regularLanding: 0,
+    alternateLanding: 0,
+    xcLanding: 0,
+    notReported: 0,
   };
+  if (!dataToShow.value || dataToShow.value.length < 1) return stats;
+
+  stats.didNotStart = countOccurences(dataToShow.value, "Doch nicht gestartet");
+  stats.regularLanding = countOccurences(dataToShow.value, "Landewiese");
+  stats.alternateLanding = countOccurences(dataToShow.value, "Notlandewiese");
+  stats.xcLanding = countOccurences(dataToShow.value, "Streckenflug");
+  stats.notReported = countOccurences(dataToShow.value, undefined);
   return stats;
 });
 

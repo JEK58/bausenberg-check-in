@@ -1,16 +1,16 @@
-const express = require("express");
-const logger = require("../../config/winston");
-const crypto = require("crypto");
+import express from "express";
+import { Request, Response } from "express";
+import logger from "../../config/winston";
+import crypto from "crypto";
+import CheckInModel from "../../models/Check-In";
 
 const router = express.Router();
-
-const CheckInModel = require("../../models/Check-In");
 
 const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
 
 // Get Check-ins
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
   try {
     if (!checkAuth(req, res)) return;
 
@@ -25,7 +25,7 @@ router.get("/", async (req, res) => {
 });
 
 // Delete Check-in
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req: Request, res: Response) => {
   try {
     if (!checkAuth(req, res)) return;
     const response = await CheckInModel.findByIdAndDelete(req.params.id);
@@ -37,7 +37,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-function checkAuth(req, res) {
+function checkAuth(req: Request, res: Response) {
   const authorization = req.headers.authorization;
   if (!authorization) {
     logger.error("No login data");
@@ -61,4 +61,4 @@ function checkAuth(req, res) {
   return true;
 }
 
-module.exports = router;
+export default router;

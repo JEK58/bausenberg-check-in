@@ -1,12 +1,11 @@
-const express = require("express");
-const logger = require("../../config/winston");
+import express, { Request, Response } from "express";
+import logger from "../../config/winston";
+import CheckInModel from "../../models/Check-In";
 
 const router = express.Router();
 
-const CheckInModel = require("../../models/Check-In");
-
 // Add Check-in
-router.post("/", async (req, res) => {
+router.post("/", async (req: Request, res: Response) => {
   try {
     const checkIn = new CheckInModel({
       name: req.body.name,
@@ -22,4 +21,4 @@ router.post("/", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

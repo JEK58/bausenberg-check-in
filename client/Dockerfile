@@ -1,5 +1,5 @@
 # Build Stage
-FROM node:16.2.0-alpine3.13 AS build-stage
+FROM node:18.4.0-alpine3.16 AS build-stage
 WORKDIR /app
 ARG API_RATE_LIMIT
 ENV VITE_API_RATE_LIMIT=$API_RATE_LIMIT

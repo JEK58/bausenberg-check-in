@@ -1,9 +1,14 @@
-require("dotenv").config();
+import dotenv from "dotenv";
+import express from "express";
+import logger from "./config/winston";
+import cors from "cors";
+import http from "http";
+import checkIn from "./routes/api/check-in";
+import checkOut from "./routes/api/check-out";
+import admin from "./routes/api/admin";
+import "./config/mongoose";
 
-const express = require("express");
-
-// Logging with Winston
-const logger = require("./config/winston");
+dotenv.config();
 
 // Error handling
 process.on("uncaughtException", (err) => {
@@ -11,10 +16,7 @@ process.on("uncaughtException", (err) => {
   process.exit(1); //mandatory (as per the Node.js docs)
 });
 
-const cors = require("cors");
-
 const app = express();
-const http = require("http");
 const server = http.createServer(app);
 
 // Middleware
@@ -27,9 +29,12 @@ const rateLimit = require("express-rate-limit").default;
 // see https://expressjs.com/en/guide/behind-proxies.html
 // app.set('trust proxy', 1);
 
-const API_RATE_LIMIT = process.env.API_RATE_LIMIT;
+const API_RATE_LIMIT = parseInt(process.env.API_RATE_LIMIT || "");
+
 const limiter = rateLimit({
-  windowMs: API_RATE_LIMIT * 60 * 1000, // x minutes
+  windowMs: Number.isInteger(API_RATE_LIMIT)
+    ? API_RATE_LIMIT * 60 * 1000 // x minutes
+    : 10 * 60 * 1000,
   max: 1, // limit each IP to 100 requests per windowMs
   message: "Zu viele Flüge in zu kurzer Zeit!",
 });
@@ -44,19 +49,10 @@ const adminLimiter = rateLimit({
 app.use("/api/admin", adminLimiter);
 
 // Routes
-const checkIn = require("./routes/api/check-in");
-const checkOut = require("./routes/api/check-out");
-
 app.use("/api/check-in", checkIn);
 app.use("/api/check-out", checkOut);
 
-const admin = require("./routes/api/admin");
-
 app.use("/api/admin", admin);
-
-// DB Setup
-require("./config/mongoose");
-const CheckInModel = require("./models/Check-In");
 
 const port = process.env.PORT || 3031;
 
