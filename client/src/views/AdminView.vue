@@ -319,7 +319,7 @@ const availableYears = computed(() => {
   if (!dbData.value) return;
 
   // Allways add current year. Even if no flights are present
-  let prevValue = format(new Date(), "yyyy");
+  const prevValue = format(new Date(), "yyyy");
   const years = [prevValue];
 
   dbData.value.forEach((checkin) => {
