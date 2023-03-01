@@ -1,7 +1,7 @@
 import Head from "next/head";
-import styles from "@/styles/Home.module.css";
 import { FormEvent } from "react";
 import { useRouter } from "next/router";
+import { saveIdToLocalStorage } from "@/util/localStorage";
 
 export default function Home() {
   const router = useRouter();
@@ -24,13 +24,15 @@ export default function Home() {
       body: JSON.stringify(data),
     };
 
-    const res = await fetch(endpoint, options);
-    console.log(res);
+    const response = await fetch(endpoint, options);
+    console.log(response);
 
-    if (res.status === 201) router.push("/check-out");
-
-    const result = await res.json();
-    console.log(result);
+    if (response.status === 201) {
+      const resData = await response.json();
+      console.log(resData);
+      saveIdToLocalStorage(resData._id, resData.checkInDate);
+      router.push("/check-out");
+    }
   };
   return (
     <>
@@ -40,7 +42,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
+      <main className="container">
         <div>
           <h3>Bausenberg Check-in</h3>
 
@@ -53,13 +55,13 @@ export default function Home() {
                 placeholder="Voller Name"
                 required
               />
+              <section>
+                <input id="btn-rml" type="radio" name="club" value="RML" />
+                <label htmlFor="btn-rml">RML</label>
 
-              <label htmlFor="btn-rml">RML</label>
-              <input id="btn-rml" type="radio" name="club" value="RML" />
-
-              <label htmlFor="btn-dgc">DGC</label>
-              <input id="btn-dgc" type="radio" name="club" value="DGC" />
-
+                <input id="btn-dgc" type="radio" name="club" value="DGC" />
+                <label htmlFor="btn-dgc">DGC</label>
+              </section>
               <button type="submit">Check In</button>
             </form>
           </section>

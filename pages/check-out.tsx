@@ -1,35 +1,50 @@
 import Head from "next/head";
-import styles from "@/styles/Home.module.css";
-import { FormEvent } from "react";
+import { FormEvent, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
+import {
+  getIdFromLocalStorage,
+  removeIdFromLocalStorage,
+} from "@/util/localStorage";
 
-export default function Home() {
+export default function CheckOut() {
   const router = useRouter();
 
+  let checkInId = useRef<string | undefined>();
+
+  useEffect(() => {
+    checkInId.current = getIdFromLocalStorage();
+    if (!checkInId.current) router.push("/");
+  }, [router]);
+
   const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-    const landing = event.target.landing.value as HTMLInputElement;
-    const data = {
-      landing: event.target?.landing.value as HTMLInputElement,
-    };
+    try {
+      event.preventDefault();
+      const data = {
+        id: checkInId.current,
+        landing: event.target?.landing.value,
+      };
 
-    const endpoint = "/api/check-out";
+      const endpoint = "/api/check-out";
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      };
 
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    };
+      const response = await fetch(endpoint, options);
+      console.log(response);
 
-    const res = await fetch(endpoint, options);
-    console.log(res);
-
-    if (res.status === 201) router.push("/thank-you");
-
-    const result = await res.json();
-    console.log(result);
+      if (response.status === 201) {
+        removeIdFromLocalStorage();
+        router.push("/thank-you");
+      } else {
+        console.log(response);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <>
@@ -39,55 +54,53 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <div>
-          <h3>Bausenberg Check-out</h3>
-          <form onSubmit={handleSubmit}>
-            <fieldset>
-              <label htmlFor="btn-regular-landing">
-                <input
-                  id="btn-regular-landing"
-                  type="radio"
-                  name="landing"
-                  value="Landewiese"
-                />
-                Landewiese 👌
-              </label>
+      <main className="container">
+        <h3>Bausenberg Check-out</h3>
+        <form onSubmit={handleSubmit}>
+          <fieldset>
+            <label htmlFor="btn-regular-landing">
+              <input
+                id="btn-regular-landing"
+                type="radio"
+                name="landing"
+                value="Landewiese"
+              />
+              Landewiese 👌
+            </label>
 
-              <label htmlFor="btn-alternate-landing">
-                <input
-                  id="btn-alternate-landing"
-                  type="radio"
-                  name="landing"
-                  value="Notlandewiese"
-                />
-                Notlandewiese 🧐
-              </label>
+            <label htmlFor="btn-alternate-landing">
+              <input
+                id="btn-alternate-landing"
+                type="radio"
+                name="landing"
+                value="Notlandewiese"
+              />
+              Notlandewiese 🧐
+            </label>
 
-              <label htmlFor="btn-xc-landing">
-                <input
-                  id="btn-xc-landing"
-                  type="radio"
-                  name="landing"
-                  value="Streckenflug"
-                />
-                Streckenflug 🎉
-              </label>
+            <label htmlFor="btn-xc-landing">
+              <input
+                id="btn-xc-landing"
+                type="radio"
+                name="landing"
+                value="Streckenflug"
+              />
+              Streckenflug 🎉
+            </label>
 
-              <label htmlFor="btn-no-takeoff">
-                <input
-                  id="btn-no-takeoff"
-                  type="radio"
-                  name="landing"
-                  value="Doch nicht gestartet"
-                />
-                Doch nicht gestartet 🤷
-              </label>
-            </fieldset>
+            <label htmlFor="btn-no-takeoff">
+              <input
+                id="btn-no-takeoff"
+                type="radio"
+                name="landing"
+                value="Doch nicht gestartet"
+              />
+              Doch nicht gestartet 🤷
+            </label>
+          </fieldset>
 
-            <button>Check out</button>
-          </form>
-        </div>
+          <button>Check out</button>
+        </form>
       </main>
     </>
   );

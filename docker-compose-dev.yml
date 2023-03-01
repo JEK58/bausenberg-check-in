@@ -1,44 +1,21 @@
 version: "3.8"
 
 services:
-  client:
-    image: node:18.10.0-alpine3.16
-    container_name: bausenberg-check-in-client
-    environment:
-      - VITE_API_RATE_LIMIT=${API_RATE_LIMIT}
-    restart: always
-    working_dir: /app/
-
-    volumes:
-      - ./client:/app/:rw
-      - /app/node_modules
-
-    command: 
-      - ./docker-entrypoint.sh
-  
-    ports:
-      - 8080:8080
-
-  server:
-    image: node:18.10.0-alpine3.16
-    restart: always
-    container_name: bausenberg-check-in-server
-    environment:
-      - NODE_ENV=development
-      - DB_CONNECTION=${DB_CONNECTION}
-      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
-      - ADMIN_USERNAME=${ADMIN_USERNAME}
-      - API_RATE_LIMIT=${API_RATE_LIMIT}
-
-    working_dir: /bausenberg-check-in/server
-    volumes:
-      - ./:/bausenberg-check-in:rw
-
-    command: sh -c "yarn install && yarn dev"
-
-    ports:
-      - 3031:3031
-
+  next-app:
+      container_name: next-app
+      build:
+        context: ./
+        dockerfile: dev.Dockerfile
+      environment:
+        MONGO_ROOT_USER: ${MONGO_ROOT_USER}
+        MONGO_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+        #NEXT_PUBLIC_ENV_VARIABLE: ${NEXT_PUBLIC_ENV_VARIABLE}
+      volumes:
+        - ./:/app
+#        - ./:/app
+      restart: always
+      ports:
+        - 4000:3000
   db:
     image: mongo:4.4.10
     restart: always
@@ -50,19 +27,3 @@ services:
     #volumes:
      # - ./db:/data/db:rw
      # - db
-
-  # mongo-express:
-  #   image: mongo-express
-  #   environment:
-  #     - ME_CONFIG_MONGODB_SERVER=db
-  #     - ME_CONFIG_MONGODB_PORT=27017
-  #     - ME_CONFIG_MONGODB_ENABLE_ADMIN=false
-  #     - ME_CONFIG_MONGODB_AUTH_DATABASE=admin
-  #     - ME_CONFIG_MONGODB_AUTH_USERNAME=${MONGO_ROOT_USER}
-  #     - ME_CONFIG_MONGODB_AUTH_PASSWORD=${MONGO_ROOT_PASSWORD}
-  #     - ME_CONFIG_BASICAUTH_USERNAME=${MONGOEXPRESS_LOGIN}
-  #     - ME_CONFIG_BASICAUTH_PASSWORD=${MONGOEXPRESS_PASSWORD}
-  #   depends_on:
-  #     - db
-  #   ports:
-  #     - "8888:8081"
