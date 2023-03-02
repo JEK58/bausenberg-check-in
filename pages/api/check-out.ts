@@ -1,8 +1,7 @@
-import connectDB from "@/middleware/mongoose";
-import CheckIn from "@/models/Check-In";
+import prisma from "@/lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   const body = req.body;
 
   console.log("body: ", body);
@@ -12,15 +11,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const query = { _id: body.id };
-    const response = await CheckIn.findOneAndUpdate(query, {
-      landing: req.body.landing,
-      checkOutDate: Date.now(),
+    const response = await prisma.checkIn.update({
+      where: { id: body.id },
+      data: {
+        landing: req.body.landing,
+        checkOutDate: new Date(),
+      },
     });
     res.status(201).send(response);
   } catch (error) {
     console.log(error);
     res.status(400).json("Error: " + error);
   }
-};
-export default connectDB(handler);
+}
+export default handler;

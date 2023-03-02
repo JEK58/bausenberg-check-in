@@ -12,6 +12,8 @@ RUN \
     else echo "Warning: Lockfile not found. It is recommended to commit lockfiles to version control." && yarn install; \
     fi
 
+RUN yarn run prisma:generate
+
 COPY pages ./pages
 COPY public ./public
 COPY next.config.js .

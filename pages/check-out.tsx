@@ -21,6 +21,7 @@ export default function CheckOut() {
       event.preventDefault();
       const data = {
         id: checkInId.current,
+        // @ts-ignore TODO: Type this
         landing: event.target?.landing.value,
       };
 

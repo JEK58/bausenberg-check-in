@@ -7,8 +7,9 @@ services:
         context: ./
         dockerfile: dev.Dockerfile
       environment:
-        MONGO_ROOT_USER: ${MONGO_ROOT_USER}
-        MONGO_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+        POSTGRES_DB: ${POSTGRES_DB}
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         #NEXT_PUBLIC_ENV_VARIABLE: ${NEXT_PUBLIC_ENV_VARIABLE}
       volumes:
         - ./:/app
@@ -17,12 +18,15 @@ services:
       ports:
         - 4000:3000
   db:
-    image: mongo:4.4.10
+    image: postgres:10
     restart: always
     container_name: bausenberg-check-in-db
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - '5432:5432'
 
     #volumes:
      # - ./db:/data/db:rw

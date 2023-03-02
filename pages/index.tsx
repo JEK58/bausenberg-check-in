@@ -1,15 +1,15 @@
 import Head from "next/head";
-import { FormEvent } from "react";
 import { useRouter } from "next/router";
 import { saveIdToLocalStorage } from "@/util/localStorage";
 
 export default function Home() {
   const router = useRouter();
 
-  const handleSubmit = async (event: FormEvent) => {
+  const handleSubmit = async (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const data = {
+      // @ts-ignore TODO: Type this correctly
       name: event.target?.name.value,
       club: event.target?.club.value,
     };
@@ -30,7 +30,7 @@ export default function Home() {
     if (response.status === 201) {
       const resData = await response.json();
       console.log(resData);
-      saveIdToLocalStorage(resData._id, resData.checkInDate);
+      saveIdToLocalStorage(resData.id, resData.checkInDate);
       router.push("/check-out");
     }
   };

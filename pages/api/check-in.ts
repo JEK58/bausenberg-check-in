@@ -1,9 +1,7 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import connectDB from "@/middleware/mongoose";
-import CheckIn from "@/models/Check-In";
+import prisma from "@/lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   const body = req.body;
 
   console.log("body: ", body);
@@ -13,17 +11,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const checkIn = new CheckIn({
-      name: req.body.name,
-      checkInDate: Date.now(),
-      club: req.body.club,
+    const checkin = await prisma.checkIn.create({
+      data: {
+        name: req.body.name,
+        checkInDate: new Date(),
+        club: req.body.club,
+      },
     });
 
-    const response = await checkIn.save();
-    res.status(201).send(response);
+    console.log(checkin);
+
+    res.status(201).send(checkin);
   } catch (error) {
     console.log(error);
     res.status(400).json("Error: " + error);
   }
-};
-export default connectDB(handler);
+}
+export default handler;

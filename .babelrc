@@ -1,0 +1,5 @@
+// Eventually replace with SWC plugin
+{
+  "presets": ["next/babel"],
+  "plugins": ["superjson-next"]
+}
