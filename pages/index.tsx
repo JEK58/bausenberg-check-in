@@ -25,11 +25,9 @@ export default function Home() {
     };
 
     const response = await fetch(endpoint, options);
-    console.log(response);
 
     if (response.status === 201) {
       const resData = await response.json();
-      console.log(resData);
       saveIdToLocalStorage(resData.id, resData.checkInDate);
       router.push("/check-out");
     }

@@ -5,7 +5,7 @@ import {
   getIdFromLocalStorage,
   removeIdFromLocalStorage,
 } from "@/util/localStorage";
-
+import { Landing } from "@prisma/client";
 export default function CheckOut() {
   const router = useRouter();
 
@@ -35,7 +35,6 @@ export default function CheckOut() {
       };
 
       const response = await fetch(endpoint, options);
-      console.log(response);
 
       if (response.status === 201) {
         removeIdFromLocalStorage();
@@ -64,7 +63,7 @@ export default function CheckOut() {
                 id="btn-regular-landing"
                 type="radio"
                 name="landing"
-                value="Landewiese"
+                value={Landing.REGULAR}
               />
               Landewiese 👌
             </label>
@@ -74,7 +73,7 @@ export default function CheckOut() {
                 id="btn-alternate-landing"
                 type="radio"
                 name="landing"
-                value="Notlandewiese"
+                value={Landing.ALT}
               />
               Notlandewiese 🧐
             </label>
@@ -84,7 +83,7 @@ export default function CheckOut() {
                 id="btn-xc-landing"
                 type="radio"
                 name="landing"
-                value="Streckenflug"
+                value={Landing.XC}
               />
               Streckenflug 🎉
             </label>
@@ -94,7 +93,7 @@ export default function CheckOut() {
                 id="btn-no-takeoff"
                 type="radio"
                 name="landing"
-                value="Doch nicht gestartet"
+                value={Landing.DNF}
               />
               Doch nicht gestartet 🤷
             </label>

@@ -20,7 +20,7 @@ async function main() {
   const alice = await prisma.checkIn.create({
     data: {
       name: "Alice Foobar",
-      landing: "Landewiese",
+      landing: "REGULAR",
       checkInDate: new Date("2022-03-02T15:28:10.072Z"),
       checkOutDate: new Date("2022-03-02T16:28:10.072Z"),
       club: "RML",
@@ -29,13 +29,31 @@ async function main() {
   const bob = await prisma.checkIn.create({
     data: {
       name: "Bob Fountain",
-      landing: "Landewiese",
+      landing: "XC",
       checkInDate: new Date("2023-03-02T15:28:10.072Z"),
       checkOutDate: new Date("2023-03-02T16:28:10.072Z"),
       club: "DGC",
     },
   });
-  console.log({ alice, bob, admin });
+  const seal = await prisma.checkIn.create({
+    data: {
+      name: "Seal Knows",
+      landing: "DNF",
+      checkInDate: new Date("2023-05-02T15:28:10.072Z"),
+      checkOutDate: new Date("2023-05-02T16:28:10.072Z"),
+      club: "DGC",
+    },
+  });
+  const carmen = await prisma.checkIn.create({
+    data: {
+      name: "Carmen Hates",
+      landing: "ALT",
+      checkInDate: new Date("2023-07-02T15:28:10.072Z"),
+      checkOutDate: new Date("2023-07-02T16:28:10.072Z"),
+      club: "RML",
+    },
+  });
+  console.log({ alice, bob, seal, carmen, admin });
 }
 main()
   .then(async () => {

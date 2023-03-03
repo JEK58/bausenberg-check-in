@@ -5,7 +5,7 @@ import { formatDate } from "@/util/formatDate";
 import { format } from "date-fns";
 import prisma from "@/lib/prisma";
 import { useRouter } from "next/router";
-import { CheckIn } from "@prisma/client";
+import { CheckIn, Landing } from "@prisma/client";
 import {
   toggleModal,
   eventListeners as modalEventListeners,
@@ -84,7 +84,6 @@ export default function Admin({
 
     if (response.status === 200) {
       const resData = await response.json();
-      console.log(resData);
       refreshData();
       toggleModal();
     }
@@ -105,11 +104,26 @@ export default function Admin({
     </option>
   ));
 
+  function readableLanding(landing?: Landing | null) {
+    switch (landing) {
+      case Landing.REGULAR:
+        return "Landewiese";
+      case Landing.ALT:
+        return "Notlandewiese";
+      case Landing.XC:
+        return "Streckenflug";
+      case Landing.DNF:
+        return "Doch nicht gestartet";
+      default:
+        return "";
+    }
+  }
+
   const listEntries = data.map((entry) => (
     <tr key={entry.id}>
       <td>{entry.name}</td>
       <td>{entry.club}</td>
-      <td>{entry.landing}</td>
+      <td>{readableLanding(entry.landing)}</td>
       <td>{formatDate(entry.checkInDate)}</td>
       <td>
         <a
@@ -160,19 +174,16 @@ export default function Admin({
               Landewiese: <strong>{statistics.regularLanding}</strong>
             </li>
             <li>
-              Notlandewiese:
-              <strong>{statistics.alternateLanding}</strong>
+              Notlandewiese: <strong>{statistics.alternateLanding}</strong>
             </li>
             <li>
-              Streckenflug:<strong> {statistics.xcLanding}</strong>
+              Streckenflug: <strong>{statistics.xcFlight}</strong>
             </li>
             <li>
-              Nicht gestartet:
-              <strong>{statistics.didNotStart}</strong>
+              Nicht gestartet: <strong>{statistics.didNotFly}</strong>
             </li>
             <li>
-              Landung nicht gemeldet:
-              <strong>{statistics.notReported}</strong>
+              Landung nicht gemeldet: <strong>{statistics.notReported}</strong>
             </li>
           </ul>
         </article>

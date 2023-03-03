@@ -13,7 +13,7 @@ model CheckIn {
   checkInDate  DateTime
   checkOutDate DateTime?
   club         String
-  landing      String?
+  landing      Landing?
   name         String // match: /(\w|[üäöÄÜÖß-]){3,} (\w|[üäöÄÜÖß-]){3,}/,
 }
 
@@ -21,4 +21,11 @@ model User {
   id     Int    @id @default(autoincrement())
   name   String
   pwHash String
+}
+
+enum Landing {
+  REGULAR
+  ALT
+  XC
+  DNF
 }

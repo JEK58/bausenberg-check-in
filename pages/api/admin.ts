@@ -6,7 +6,6 @@ import { authOptions } from "./auth/[...nextauth]";
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const body = req.body;
 
-  console.log("body: ", body);
   const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
