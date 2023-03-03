@@ -95,7 +95,7 @@ export default function Admin({
   }
 
   function handleChangeYear(e: React.ChangeEvent<HTMLSelectElement>) {
-    router.push(e.target.value);
+    router.push(e.target.value, undefined, { scroll: false });
   }
 
   const selectableYears = years.map((year) => (
