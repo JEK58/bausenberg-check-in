@@ -1,7 +1,3 @@
-// type Club = "RML" | "DGC";
-enum Club {
-  RML = "RML",
-  DGC = "DGC",
-}
+type Club = "RML" | "DGC";
 
 export default Club;
