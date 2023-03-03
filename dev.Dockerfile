@@ -12,7 +12,7 @@ RUN \
     else echo "Warning: Lockfile not found. It is recommended to commit lockfiles to version control." && yarn install; \
     fi
 
-RUN yarn run prisma:generate
+RUN yarn prisma generate
 
 COPY pages ./pages
 COPY public ./public

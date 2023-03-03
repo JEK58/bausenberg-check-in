@@ -16,3 +16,9 @@ model CheckIn {
   landing      String?
   name         String // match: /(\w|[üäöÄÜÖß-]){3,} (\w|[üäöÄÜÖß-]){3,}/,
 }
+
+model User {
+  id     Int    @id @default(autoincrement())
+  name   String
+  pwHash String
+}

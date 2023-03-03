@@ -10,12 +10,14 @@ import {
   toggleModal,
   eventListeners as modalEventListeners,
 } from "@/helper/modal";
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import { calcStats } from "@/helper/statistics";
+import LoginButton from "@/components/LoginButton";
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
+  // TODO: Validate query year
   const { year } = context.query;
 
   const data = await prisma.checkIn.findMany();
@@ -49,7 +51,9 @@ export default function Admin({
   const { year } = router.query;
 
   // Allow to dismiss modal by ESC key etc
-  modalEventListeners();
+  useEffect(() => {
+    modalEventListeners();
+  }, []);
 
   const refreshData = () => {
     router.replace(router.asPath, undefined, { scroll: false });
@@ -140,6 +144,9 @@ export default function Admin({
               <select id="years" value={year} onChange={handleChangeYear}>
                 {selectableYears}
               </select>
+            </li>
+            <li>
+              <LoginButton />
             </li>
           </ul>
         </nav>
