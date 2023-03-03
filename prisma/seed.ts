@@ -3,11 +3,11 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 async function main() {
-  const iterations = 12;
-
+  // Create admin user
   if (!process.env.ADMIN_PASSWORD)
     return console.log("ADMIN_PASSWORD not set in .env");
 
+  const iterations = 12;
   const hash = await bcrypt.hash(process.env.ADMIN_PASSWORD, iterations);
 
   const admin = await prisma.user.create({
@@ -17,6 +17,7 @@ async function main() {
     },
   });
 
+  // Create demo entries
   const alice = await prisma.checkIn.create({
     data: {
       name: "Alice Foobar",
