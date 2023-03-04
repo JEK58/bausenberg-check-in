@@ -125,6 +125,7 @@ export default function Admin({
       <td>{entry.club}</td>
       <td>{readableLanding(entry.landing)}</td>
       <td>{formatDate(entry.checkInDate)}</td>
+      <td>{formatDate(entry.checkOutDate)}</td>
       <td>
         <a
           href="#"
@@ -195,7 +196,8 @@ export default function Admin({
                 <th>Name</th>
                 <th>Verein</th>
                 <th>Landung</th>
-                <th>Datum</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
                 <th></th>
               </tr>
             </thead>
