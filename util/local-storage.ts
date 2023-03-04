@@ -6,6 +6,21 @@ export const getIdFromLocalStorage = () => {
   return;
 };
 
+export const localStorageHasDataFromToday = () => {
+  const ls = localStorage.getItem("check-in-id");
+  if (ls === null) return false;
+  const { id, date } = JSON.parse(ls);
+
+  if (
+    typeof id === "string" &&
+    new Date(date).toDateString() === new Date().toDateString()
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
 export const removeIdFromLocalStorage = () => {
   localStorage.removeItem("check-in-id");
 };

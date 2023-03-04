@@ -12,9 +12,9 @@ model CheckIn {
   id           String    @id @default(uuid())
   checkInDate  DateTime
   checkOutDate DateTime?
-  club         String
+  club         Club
   landing      Landing?
-  name         String // match: /(\w|[üäöÄÜÖß-]){3,} (\w|[üäöÄÜÖß-]){3,}/,
+  name         String
 }
 
 model User {
@@ -28,4 +28,9 @@ enum Landing {
   ALT
   XC
   DNF
+}
+
+enum Club {
+  DGC
+  RML
 }
