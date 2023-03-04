@@ -5,6 +5,8 @@
 /.pnp
 .pnp.js
 
+# import data
+/import/data/
 # testing
 /coverage
 
