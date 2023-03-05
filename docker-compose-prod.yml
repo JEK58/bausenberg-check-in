@@ -41,6 +41,8 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
 
+volumes:
+  db:
 
   # traefik:
   #   image: traefik
