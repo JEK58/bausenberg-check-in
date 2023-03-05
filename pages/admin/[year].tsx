@@ -20,7 +20,9 @@ export const getServerSideProps = async (
   // TODO: Validate query year
   const { year } = context.query;
 
-  const data = await prisma.checkIn.findMany();
+  const data = await prisma.checkIn.findMany({
+    orderBy: { checkInDate: "desc" },
+  });
 
   // Good enough for a small set of data
   const filteredByYear = data.filter(
