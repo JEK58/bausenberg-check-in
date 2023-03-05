@@ -22,6 +22,8 @@ services:
         - db
       ports:
         - 3000:80
+      networks:
+        - internal
       labels:
         traefik.enable: true
         traefik.http.routers.bausenberg-check-in.rule: "Host(`${TRAEFIK_DOMAIN}`)"
@@ -40,9 +42,14 @@ services:
     #   - '5432:5432'
     volumes:
       - db:/var/lib/postgresql/data
+    networks:
+      - internal
 
 volumes:
   db:
+
+networks:
+  internal
 
   # traefik:
   #   image: traefik
