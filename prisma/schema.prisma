@@ -1,0 +1,36 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+model CheckIn {
+  id           String    @id @default(uuid())
+  checkInDate  DateTime
+  checkOutDate DateTime?
+  club         Club
+  landing      Landing?
+  name         String
+}
+
+model User {
+  id     Int    @id @default(autoincrement())
+  name   String
+  pwHash String
+}
+
+enum Landing {
+  REGULAR
+  ALT
+  XC
+  DNF
+}
+
+enum Club {
+  DGC
+  RML
+}

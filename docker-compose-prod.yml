@@ -1,91 +1,84 @@
 version: "3.8"
 
 services:
-  client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-      args:
-        API_RATE_LIMIT: ${API_RATE_LIMIT}
-    image: bausenberg-check-in-client
-    container_name: bausenberg-check-in-client
-    restart: always
-    depends_on:
-      - server
+  next-app:
+      container_name: bausenberg-check-in-next-app
+      build:
+        context: ./
+        dockerfile: Dockerfile
+      environment:
+        POSTGRES_DB: ${POSTGRES_DB}
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        NEXTAUTH_URL: ${NEXTAUTH_URL}
+        NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+        ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+        DATABASE_URL: ${DATABASE_URL_DOCKER}
+        CHECKIN_RATE_LIMIT: ${CHECKIN_RATE_LIMIT}
+        #NEXT_PUBLIC_ENV_VARIABLE: ${NEXT_PUBLIC_ENV_VARIABLE}
 
-    labels:
-      traefik.enable: true
-      traefik.http.routers.bausenberg-check-in.rule: "Host(`${DOMAIN}`)"
-      traefik.http.routers.bausenberg-check-in.entrypoints: websecure
-      traefik.http.routers.bausenberg-check-in.tls.certresolver: myresolver
-      traefik.http.routers.bausenberg-check-in.priority: 100
-
-  server:
-    image: node:18.10.0-alpine3.16
-    restart: always
-    container_name: bausenberg-check-in-server
-    depends_on:
-      - db
-
-    working_dir: /bausenberg-check-in/server
-    volumes:
-      - ./:/bausenberg-check-in:rw
-    environment:
-      - NODE_ENV=production
-      - DB_CONNECTION=${DB_CONNECTION}
-      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
-      - ADMIN_USERNAME=${ADMIN_USERNAME}
-      - API_RATE_LIMIT=${API_RATE_LIMIT}
-
-    labels:
-      traefik.enable: true
-      traefik.http.routers.bausenberg-check-in-ws.rule: "Host(`${DOMAIN}`) && PathPrefix(`/api`)"
-      traefik.http.routers.bausenberg-check-in-ws.entrypoints: websecure
-      traefik.http.routers.bausenberg-check-in-ws.tls.certresolver: myresolver
-      traefik.http.routers.bausenberg-check-in-ws.priority: 200
-      traefik.http.services.bausenberg-check-in-ws.loadbalancer.server.port: 3031
-
-    command: sh -c "yarn install && yarn start"
+      restart: always
+      depends_on:
+        - db
+      ports:
+        - 3000:3000
+      labels:
+        traefik.enable: true
+        traefik.http.routers.bausenberg-check-in.rule: "Host(`${TRAEFIK_DOMAIN}`)"
+        traefik.http.routers.bausenberg-check-in.entrypoints: websecure
+        traefik.http.routers.bausenberg-check-in.tls.certresolver: myresolver
+        traefik.http.routers.bausenberg-check-in.priority: 100
+        traefik.port: 3000
 
   db:
-    image: mongo:4.4.10
+    image: postgres:10
     restart: always
     container_name: bausenberg-check-in-db
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
-
-    volumes:
-      - ./db:/data/db:rw
-
-  traefik:
-    image: traefik
-    restart: unless-stopped
-    container_name: traefik
-    command:
-      #- "--log.level=DEBUG"
-      #- "--api.insecure=true"
-      - "--log.level=ERROR"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-      - "--certificatesresolvers.myresolver.acme.email=bausenberg@thermik4u.de"
-      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-    labels:
-      traefik.http.routers.redirs.rule: HostRegexp(`{host:.+}`)
-      traefik.http.routers.redirs.entrypoints: web
-      traefik.http.routers.redirs.middlewares: redirect-to-https
-      traefik.enable: true
-      traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: https
-      traefik.http.middlewares.redirect-to-https.redirectscheme.permanent: true
-
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
-      - "80:80"
-      - "443:443"
-      #- "8080:8080"
+      - '5432:5432'
     volumes:
-      - "./letsencrypt:/letsencrypt"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - db:/var/lib/postgresql/data
+
+volumes:
+  db:
+
+networks:
+  default:
+    external:
+      name: traefik
+
+  # traefik:
+  #   image: traefik
+  #   restart: unless-stopped
+  #   container_name: traefik
+  #   command:
+  #     #- "--log.level=DEBUG"
+  #     #- "--api.insecure=true"
+  #     - "--log.level=ERROR"
+  #     - "--providers.docker=true"
+  #     - "--providers.docker.exposedbydefault=false"
+  #     - "--entrypoints.web.address=:80"
+  #     - "--entrypoints.websecure.address=:443"
+  #     - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+  #     #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+  #     - "--certificatesresolvers.myresolver.acme.email=bausenberg@thermik4u.de"
+  #     - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+  #   labels:
+  #     traefik.http.routers.redirs.rule: HostRegexp(`{host:.+}`)
+  #     traefik.http.routers.redirs.entrypoints: web
+  #     traefik.http.routers.redirs.middlewares: redirect-to-https
+  #     traefik.enable: true
+  #     traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: https
+  #     traefik.http.middlewares.redirect-to-https.redirectscheme.permanent: true
+
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #     #- "8080:8080"
+  #   volumes:
+  #     - "./letsencrypt:/letsencrypt"
+  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"

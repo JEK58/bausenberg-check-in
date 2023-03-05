@@ -1,0 +1,8 @@
+main {
+  min-height: calc(100vh - 6rem);
+  padding-top: 1rem;
+}
+
+.warning {
+  color: red;
+}
