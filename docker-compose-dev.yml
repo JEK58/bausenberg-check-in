@@ -20,6 +20,8 @@ services:
         - ./:/app
         - /app/node_modules
       restart: always
+      depends_on:
+        - db
       ports:
         - 4000:3000
   db:
