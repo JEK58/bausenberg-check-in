@@ -21,13 +21,15 @@ services:
       depends_on:
         - db
       ports:
-        - 3000:80
+        - 3000:3000
       labels:
         traefik.enable: true
         traefik.http.routers.bausenberg-check-in.rule: "Host(`${TRAEFIK_DOMAIN}`)"
         traefik.http.routers.bausenberg-check-in.entrypoints: websecure
         traefik.http.routers.bausenberg-check-in.tls.certresolver: myresolver
         traefik.http.routers.bausenberg-check-in.priority: 100
+        traefik.port: 3000
+
   db:
     image: postgres:10
     restart: always
