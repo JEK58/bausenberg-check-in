@@ -42,15 +42,7 @@ services:
       - '5432:5432'
     volumes:
       - db:/var/lib/postgresql/data
-
-volumes:
-  db:
-
-networks:
-  default:
-    external:
-      name: traefik
-
+      
   traefik:
     image: traefik
     restart: unless-stopped
@@ -82,3 +74,13 @@ networks:
     volumes:
       - "./letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+volumes:
+  db:
+
+networks:
+  default:
+    external:
+      name: traefik
+
+  
