@@ -77,6 +77,7 @@ export default function Home() {
             <form onSubmit={handleSubmit}>
               <input
                 id="name"
+                data-testid="name-input"
                 name="name"
                 type="text"
                 placeholder="Voller Name"

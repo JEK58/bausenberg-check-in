@@ -6,11 +6,16 @@ const createJestConfig = nextJest({
 });
 
 // Add any custom config to be passed to Jest
-/** @type {import('jest').Config} */
 const customJestConfig = {
-  // Add more setup options before each test is run
-  // setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  moduleNameMapper: {
+    // Handle module aliases (this will be automatically configured for you soon)
+    "^@/components/(.*)$": "<rootDir>/components/$1",
 
+    "^@/pages/(.*)$": "<rootDir>/pages/$1",
+    "^@/util/(.*)$": "<rootDir>/util/$1",
+    "^@/lib/(.*)$": "<rootDir>/lib/$1",
+  },
   testEnvironment: "jest-environment-jsdom",
 };
 
