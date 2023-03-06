@@ -8,7 +8,7 @@ export const getIdFromLocalStorage = () => {
 
 export const localStorageHasDataFromToday = () => {
   const ls = localStorage.getItem("check-in-id");
-  if (ls === null) return false;
+  if (ls == null) return false;
   const { id, date } = JSON.parse(ls);
 
   if (
