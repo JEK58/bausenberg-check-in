@@ -1,10 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Home from "@/pages/index";
-import {
-  localStorageHasDataFromToday,
-  saveIdToLocalStorage,
-} from "@/util/local-storage";
+import { saveIdToLocalStorage } from "@/util/local-storage";
 
 jest.mock("next/router", () => ({
   useRouter: jest.fn(),
