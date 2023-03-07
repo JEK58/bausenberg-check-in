@@ -9,6 +9,14 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  ADMIN_USERNAME: admin
+  ADMIN_PASSWORD: password
+  NEXTAUTH_URL: http://localhost:3000/
+  NEXTAUTH_SECRET: fb3qi8rzabdszi8q27neqow8han87rhcnw
+  CHECKIN_RATE_LIMIT: 2
+  DATABASE_URL: ${{ secrets.DB_TEST_URL }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
