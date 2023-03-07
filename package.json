@@ -10,6 +10,7 @@
     "build": "next build",
     "start": "next start",
     "test": "jest --watch",
+    "test-ci": "jest",
     "lint": "next lint",
     "import-data": "ts-node import/import.ts"
   },
