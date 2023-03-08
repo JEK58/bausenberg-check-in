@@ -4,8 +4,8 @@ Needs .env! See .env-sample
 
 ### Demo
 
-https://flight-check-in.vercel.app
-https://flight-check-in.vercel.app/admin
+* https://flight-check-in.vercel.app
+* https://flight-check-in.vercel.app/admin
 
 ```
 user: admin
