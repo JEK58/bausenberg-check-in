@@ -20,8 +20,8 @@ export function calcStats(data: CheckIn[]) {
 
   stats.didNotFly = countOccurences(data, Landing.DNF);
   stats.regularLanding = countOccurences(data, Landing.REGULAR);
-  stats.alternateLanding = countOccurences(data, Landing.XC);
-  stats.xcFlight = countOccurences(data, Landing.ALT);
+  stats.alternateLanding = countOccurences(data, Landing.ALT);
+  stats.xcFlight = countOccurences(data, Landing.XC);
   stats.notReported = countOccurences(data);
   return stats;
 }
