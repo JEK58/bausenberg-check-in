@@ -15,7 +15,7 @@ env:
   NEXTAUTH_URL: http://localhost:3000/
   NEXTAUTH_SECRET: fb3qi8rzabdszi8q27neqow8han87rhcnw
   CHECKIN_RATE_LIMIT: 2
-  DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
+  DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
 
 jobs:
   build:
