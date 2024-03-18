@@ -2,16 +2,6 @@
 
 Needs .env! See .env-sample
 
-### Demo
-
-* https://flight-check-in.vercel.app
-* https://flight-check-in.vercel.app/admin
-
-```
-user: admin
-password: admin
-```
-
 #### Production
 
 ```
@@ -29,6 +19,3 @@ Or if the Dockerfile changed:
 ```
 docker-compose -f docker-compose-dev.yml up --force-recreate --build
 ```
-
-
-
